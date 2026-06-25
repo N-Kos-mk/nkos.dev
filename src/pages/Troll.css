@@ -1,0 +1,89 @@
+.troll-wrapper {
+  background: #fff;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+@keyframes rainbow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.rainbow-btn {
+  position: fixed;
+  background: linear-gradient(90deg,
+    #ff0000, #ff7700, #ffff00, #00dd00,
+    #0088ff, #8800ff, #ff0099, #ff0000
+  );
+  background-size: 250% auto;
+  animation: rainbow 1.6s linear infinite;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  padding: 11px 22px;
+  cursor: pointer;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  user-select: none;
+}
+
+/* ---- result (なんもないよ) ---- */
+
+.troll-result {
+  background: #fff;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(-8deg); }
+  50%       { transform: rotate(8deg); }
+}
+
+.result-emoji {
+  font-size: 4rem;
+  line-height: 1;
+  margin: 0 0 4px;
+  animation: wobble 1.2s ease-in-out infinite;
+  display: block;
+}
+
+.result-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #111;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.result-sub {
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+  line-height: 1.7;
+  margin: 4px 0 0;
+}
+
+.result-home {
+  margin-top: 28px;
+  font-size: 0.9rem;
+  color: #888;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+
+.result-home:hover {
+  color: #333;
+}
