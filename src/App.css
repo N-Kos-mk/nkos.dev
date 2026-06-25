@@ -97,6 +97,18 @@
   color: var(--accent);
 }
 
+.title-dot-wrap {
+  display: inline-block;
+  /* 上70%・下8%をカット。上下の調整はここの数値を変える */
+  clip-path: inset(70% 0 8% 0);
+}
+
+.title-dot {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .subtitle {
   font-size: clamp(15px, 2vw, 18px);
   color: var(--text);
