@@ -53,7 +53,7 @@ function App() {
           <p className="eyebrow">Welcome</p>
           <h1 className="title">
             <span className="title-main">nkos</span>
-            <span className="title-accent">.dev</span>
+            <span className="title-accent"><span className="title-dot-wrap"><Link to="/troll" className="title-dot">.</Link></span>dev</span>
           </h1>
           <p className="subtitle">A space for things I make and think about.</p>
         </div>
