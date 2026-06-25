@@ -68,7 +68,7 @@ function App() {
       </section>
 
       <footer className="footer">
-        <p>© 2025 nkos.dev</p>
+        <p>© 2026 nkos.dev</p>
       </footer>
     </div>
   )
