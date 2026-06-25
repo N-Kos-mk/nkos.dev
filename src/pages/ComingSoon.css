@@ -35,7 +35,37 @@
 
 .cs-sub {
   color: var(--text);
+  margin-bottom: 24px;
+}
+
+.cs-sushi-wrap {
+  margin-top: 20px;
   margin-bottom: 36px;
+}
+
+@keyframes spin-sushi {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.cs-sushi {
+  display: inline-block;
+  font-size: 4rem;
+  animation: spin-sushi 1.8s linear infinite;
+  transform-origin: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cs-sushi-caption {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text);
+  opacity: 0.5;
+
+  s {
+    text-decoration-color: var(--accent);
+  }
 }
 
 .cs-back {
