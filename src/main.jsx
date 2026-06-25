@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import ComingSoon from './pages/ComingSoon.jsx'
+import Troll from './pages/Troll.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/projects" element={<ComingSoon label="Projects" />} />
         <Route path="/blog" element={<ComingSoon label="Blog" />} />
         <Route path="/works" element={<ComingSoon label="Works" />} />
+        <Route path="/troll" element={<Troll />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
