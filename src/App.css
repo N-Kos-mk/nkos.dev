@@ -5,6 +5,13 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.65s ease;
+}
+
+.wrapper--about-open {
+  transform: translateY(-48px);
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ── Background orbs ── */
@@ -171,6 +178,35 @@
 
   .hub-card:hover & {
     transform: translateX(3px);
+  }
+}
+
+/* ── GitHub カード variant ── */
+.hub-card--github {
+  border-color: rgba(56, 189, 248, 0.15);
+
+  &:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 0 24px rgba(56, 189, 248, 0.15);
+  }
+
+  .hub-card-icon {
+    color: #38bdf8;
+  }
+}
+
+/* ── About Me カード variant ── */
+.hub-card--about {
+  border-color: rgba(52, 211, 153, 0.15);
+  text-align: left;
+
+  &:hover {
+    border-color: rgba(52, 211, 153, 0.45);
+    box-shadow: 0 0 24px rgba(52, 211, 153, 0.15);
+  }
+
+  .hub-card-icon {
+    color: #34d399;
   }
 }
 
