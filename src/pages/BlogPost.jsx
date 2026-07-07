@@ -1,3 +1,4 @@
+import { useRef, useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { getPost } from '../lib/blog.js'
@@ -6,6 +7,19 @@ import './Blog.css'
 export default function BlogPost() {
   const { slug } = useParams()
   const post = getPost(slug)
+  const backRef = useRef(null)
+  const [sticky, setSticky] = useState(false)
+
+  useEffect(() => {
+    const el = backRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setSticky(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   if (!post) {
     return (
@@ -21,28 +35,46 @@ export default function BlogPost() {
   const { Component } = post
 
   return (
-    <div className="blog-page">
-      <div className="bg-orbs" aria-hidden="true">
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-      </div>
-
-      <div className="blog-inner">
+    <>
+      {/* スクロール時に現れるミニバー */}
+      <div className={`blog-sticky${sticky ? ' blog-sticky--visible' : ''}`}>
         <Link to="/blog" className="blog-back">
-          <ArrowLeft size={14} />
-          Blog
+          <ArrowLeft size={14} /> Blog
         </Link>
-
-        <article className="post">
-          <header className="post-header">
-            <time className="post-date">{post.date}</time>
-            <h1 className="post-title">{post.title}</h1>
-          </header>
-          <div className="prose">
-            <Component />
-          </div>
-        </article>
+        <span className="blog-sticky-title">{post.title}</span>
       </div>
-    </div>
+
+      <div className="blog-page">
+        <div className="bg-orbs" aria-hidden="true">
+          <div className="orb orb-1" />
+          <div className="orb orb-2" />
+        </div>
+
+        <div className="blog-inner">
+          <Link to="/blog" className="blog-back" ref={backRef}>
+            <ArrowLeft size={14} />
+            Blog
+          </Link>
+
+          <article className="post">
+            <header className="post-header">
+              <time className="post-date">{post.date}</time>
+              <h1 className="post-title">{post.title}</h1>
+              {post.excerpt && (
+                <p className="post-excerpt">{post.excerpt}</p>
+              )}
+            </header>
+            <div className="prose">
+              <Component />
+            </div>
+          </article>
+
+          <Link to="/blog" className="post-footer-back">
+            <ArrowLeft size={14} />
+            Blog 一覧へ
+          </Link>
+        </div>
+      </div>
+    </>
   )
 }
