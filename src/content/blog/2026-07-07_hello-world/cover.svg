@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0f1a"/>
+      <stop offset="100%" style="stop-color:#1a1a2e"/>
+    </linearGradient>
+    <radialGradient id="orb1" cx="20%" cy="30%">
+      <stop offset="0%" style="stop-color:#6d28d9;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#6d28d9;stop-opacity:0"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="80%" cy="70%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#0ea5e9;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#bg)"/>
+  <ellipse cx="160" cy="120" rx="240" ry="200" fill="url(#orb1)"/>
+  <ellipse cx="640" cy="280" rx="200" ry="180" fill="url(#orb2)"/>
+  <text x="400" y="185" font-family="system-ui, sans-serif" font-size="52" font-weight="700"
+        fill="#f8fafc" text-anchor="middle" letter-spacing="-2">はじめての投稿</text>
+  <text x="400" y="235" font-family="system-ui, sans-serif" font-size="18"
+        fill="#94a3b8" text-anchor="middle">nkos.dev · 2026-07-07</text>
+</svg>
