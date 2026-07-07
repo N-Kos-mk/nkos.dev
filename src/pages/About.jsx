@@ -1,5 +1,10 @@
-import { ArrowLeft, Mail, ExternalLink, GraduationCap, Calendar, MapPin, Home } from 'lucide-react'
-import { siPython, siJavascript, siTypescript, siDart, siHtml5, siCss } from 'simple-icons/icons'
+import { ArrowLeft, Mail, ExternalLink, GraduationCap, Calendar, MapPin, Home, Code2, AppWindow, Bot } from 'lucide-react'
+import {
+  siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
+  siReact, siVite, siNodedotjs, siFastapi,
+  siMysql, siPostgresql, siSqlite,
+  siGit, siGithub, siLinux, siCloudflare, siCloudflareworkers, siVercel,
+} from 'simple-icons/icons'
 import './About.css'
 
 const age = new Date().getFullYear() - 2002
@@ -11,44 +16,66 @@ const FACTS = [
   { Icon: Home,          text: '東京都在住' },
 ]
 
-function SiIcon({ icon, color, size = 18 }) {
+// GitHub のブランドカラーはダーク背景で視認しづらいため、代わりに --text-h で描画する
+const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
+
+function SkillIcon({ item, size = 16 }) {
+  if (item.Icon) {
+    const { Icon } = item
+    return <Icon size={size} color="var(--text-h)" strokeWidth={1.8} style={{ flexShrink: 0 }} />
+  }
+  const { icon } = item
+  const color = DARK_ICON_SLUGS.has(icon.slug) ? 'var(--text-h)' : `#${icon.hex}`
   return (
-    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill={`#${icon.hex}`} style={{ flexShrink: 0 }}>
+    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill={color} style={{ flexShrink: 0 }}>
       <path d={icon.path} />
     </svg>
   )
 }
 
-const LANGUAGES = [
+const SKILL_GROUPS = [
   {
-    name: 'Python',
-    icons: [{ icon: siPython }],
-    comment: '一番よく使ってた。10 年以上の相棒だけど最近は AI に全部書かせてる',
+    title: '言語',
+    items: [
+      { name: 'HTML', icon: siHtml5 },
+      { name: 'CSS', icon: siCss },
+      { name: 'JavaScript', icon: siJavascript },
+      { name: 'TypeScript', icon: siTypescript },
+      { name: 'Python', icon: siPython },
+      { name: 'PHP', icon: siPhp },
+    ],
   },
   {
-    name: 'JavaScript / TypeScript',
-    icons: [{ icon: siJavascript }, { icon: siTypescript }],
-    comment: '一番よく使う。最近は全部 AI に(ry',
+    title: 'フレームワーク・ライブラリ',
+    items: [
+      { name: 'React', icon: siReact },
+      { name: 'Vite', icon: siVite },
+      { name: 'Node.js', icon: siNodedotjs },
+      { name: 'FastAPI', icon: siFastapi },
+    ],
   },
   {
-    name: 'Dart',
-    icons: [{ icon: siDart }],
-    comment: '一番よく使いたい。最近勉強中',
+    title: 'データベース',
+    items: [
+      { name: 'MySQL', icon: siMysql },
+      { name: 'PostgreSQL', icon: siPostgresql },
+      { name: 'SQLite', icon: siSqlite },
+    ],
   },
   {
-    name: 'HTML / CSS',
-    icons: [{ icon: siHtml5 }, { icon: siCss }],
-    comment: '広く見れば一番よく使う',
+    title: 'インフラ・ツール',
+    items: [
+      { name: 'Git', icon: siGit },
+      { name: 'GitHub', icon: siGithub },
+      { name: 'VS Code', Icon: Code2 },
+      { name: 'Linux', icon: siLinux },
+      { name: 'Windows', Icon: AppWindow },
+      { name: 'Cloudflare', icon: siCloudflare },
+      { name: 'Workers', icon: siCloudflareworkers },
+      { name: 'Vercel', icon: siVercel },
+    ],
   },
 ]
-
-const FRAMEWORKS = ['React', 'Next.js', 'Flutter']
-
-const INFRA = ['Cloudflare Workers', 'PostgreSQL', 'MySQL']
-
-const ENV = ['VS Code', 'Git / GitHub', 'Windows', 'macOS', 'Linux']
-
-const AI_TOOLS = ['Claude / Claude Code', 'Codex']
 
 const INTERESTS = [
   { icon: '🎮', label: 'ゲーム' },
@@ -100,50 +127,29 @@ export default function About({ isOpen, onClose }) {
         <section className="about-section">
           <h2 className="about-section-title">Skills</h2>
 
-          <div className="skill-block">
-            <h3 className="skill-block-title">言語</h3>
-            <ul className="lang-list">
-              {LANGUAGES.map(lang => (
-                <li key={lang.name} className="lang-item">
-                  <div className="lang-icons">
-                    {lang.icons.map(({ icon }) => (
-                      <SiIcon key={icon.slug} icon={icon} size={18} />
-                    ))}
-                  </div>
-                  <span className="lang-name">{lang.name}</span>
-                  <span className="lang-comment">{lang.comment}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="skill-block">
-            <h3 className="skill-block-title">フレームワーク</h3>
-            <div className="skill-tags">
-              {FRAMEWORKS.map(f => <span key={f} className="skill-tag">{f}</span>)}
+          {SKILL_GROUPS.map(group => (
+            <div key={group.title} className="skill-block">
+              <h3 className="skill-block-title">{group.title}</h3>
+              <div className="skill-chips">
+                {group.items.map(item => (
+                  <span key={item.name} className="skill-chip">
+                    <SkillIcon item={item} />
+                    {item.name}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
 
-          <div className="skill-block">
-            <h3 className="skill-block-title">インフラ・DB</h3>
-            <div className="skill-tags">
-              {INFRA.map(s => <span key={s} className="skill-tag">{s}</span>)}
-            </div>
-          </div>
-
-          <div className="skill-block">
-            <h3 className="skill-block-title">開発環境</h3>
-            <div className="skill-tags">
-              {ENV.map(e => <span key={e} className="skill-tag">{e}</span>)}
-            </div>
-          </div>
-
-          <div className="skill-block">
-            <h3 className="skill-block-title">AI ツール</h3>
-            <div className="skill-tags">
-              {AI_TOOLS.map(a => <span key={a} className="skill-tag">{a}</span>)}
-            </div>
-          </div>
+          <a
+            href="https://github.com/N-Kos-mk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="skill-more-link"
+          >
+            詳細(GitHub)
+            <ExternalLink size={14} />
+          </a>
         </section>
 
         {/* Interests */}
@@ -173,12 +179,12 @@ export default function About({ isOpen, onClose }) {
               <Mail size={16} />
               <span className="contact-pending">（準備中...）</span>
             </li>
-            <li>
+            {/*<li>
               <ExternalLink size={16} />
               <a href="https://github.com/N-Kos-mk" target="_blank" rel="noopener noreferrer">
                 GitHub
               </a>
-            </li>
+            </li>*/}
           </ul>
         </section>
 
