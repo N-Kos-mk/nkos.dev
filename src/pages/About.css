@@ -35,20 +35,17 @@
 .about-back {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 5px;
+  font-size: 13px;
   color: var(--accent);
+  opacity: 0.55;
   background: none;
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 8px 16px;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: opacity 0.2s;
 
-  &:hover {
-    border-color: var(--card-border-hover);
-    box-shadow: 0 0 12px var(--accent-glow);
-  }
+  &:hover { opacity: 1; }
 }
 
 /* ── Content wrapper ── */
