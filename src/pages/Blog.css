@@ -16,6 +16,45 @@
   gap: 48px;
 }
 
+/* ── Sticky mini bar ── */
+.blog-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 24px;
+  background: rgba(8, 8, 16, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--card-border);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.blog-sticky--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.blog-sticky-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-h);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 60%;
+  text-align: right;
+}
+
 /* ── Back link（枠なし） ── */
 .blog-back {
   display: inline-flex;
@@ -167,6 +206,34 @@
   letter-spacing: -0.03em;
   color: var(--text-h);
   margin: 0;
+}
+
+/* excerpt：タイトル直下のリード文 */
+.post-excerpt {
+  font-size: 1rem;
+  color: var(--text);
+  opacity: 0.6;
+  line-height: 1.75;
+  margin: 0;
+  padding-top: 4px;
+  font-style: italic;
+}
+
+/* 記事末尾の一覧リンク */
+.post-footer-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--accent);
+  opacity: 0.55;
+  text-decoration: none;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-border);
+  width: 100%;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 1; }
 }
 
 /* ── Prose ── */
