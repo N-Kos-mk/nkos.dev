@@ -93,9 +93,12 @@
 }
 
 /* ── 面の構成 ── */
+/* 上段は中身の高さぴったりに収める。余った高さを比率で配ると
+   Identity の見出しと名前のあいだに用途のない空白が生まれるため、
+   余白はすべて下段（一覧が入る行）に吸わせる */
 .d2-main {
   display: grid;
-  grid-template-rows: minmax(min-content, 0.82fr) minmax(min-content, 1fr) min-content;
+  grid-template-rows: min-content minmax(min-content, 1fr) min-content;
   min-width: 0;
 }
 
@@ -153,8 +156,8 @@
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--d2-brass);
-  animation: d2-flicker 0.5s steps(1, end) backwards;
-  animation-delay: calc(430ms + var(--i, 0) * 45ms);
+  animation: d2-flicker 0.42s steps(1, end) backwards;
+  animation-delay: calc(400ms + var(--i, 0) * 45ms);
 }
 
 .d2-mod-meta {
@@ -164,13 +167,13 @@
   color: var(--d2-dim);
   white-space: nowrap;
   animation: d2-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(560ms + var(--i, 0) * 45ms);
+  animation-delay: calc(900ms + var(--i, 0) * 45ms);
 }
 
-/* 見出しが点いたあと、中身が入る */
+/* 見出しの明滅が収まってから、ひと呼吸おいて中身が入る */
 .d2-mod > *:not(.d2-mod-head):not(.d2-vline) {
   animation: d2-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(580ms + var(--i, 0) * 45ms);
+  animation-delay: calc(960ms + var(--i, 0) * 45ms);
 }
 
 /* 角のトンボ。ホバーで伸びる */
@@ -211,7 +214,6 @@
   display: flex;
   align-items: flex-end;
   gap: clamp(16px, 2.5vw, 32px);
-  margin-top: auto;
 }
 
 .d2-id-body {
@@ -227,7 +229,7 @@
   letter-spacing: -0.045em;
   line-height: 0.9;
   color: var(--d2-white);
-  animation: d2-expand 1.05s 640ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: d2-expand 1.05s 1020ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 .d2-id-domain {
@@ -479,59 +481,73 @@
   opacity: 0.75;
 }
 
-/* 格子には組まず、ゆらぎを持たせて散らす。
-   ゆらぎは index から決定的に生成しているので、再描画で位置は動かない */
-.d2-cells {
+/* 一覧として並べるのではなく、2 本の帯で送り続ける。
+   同じ並びを 2 度描き、ちょうど半分だけ送って原点に戻すので継ぎ目が出ない。
+   間隔は gap ではなく margin で取る。gap だと連結部だけ半分ずれて跳ねる */
+.d2-belts {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 4px;
+  margin: 4px 0 0;
+  /* 左右の端で溶けるように消し、帯の始点と終点を見せない */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
+}
+
+.d2-belt {
+  overflow: hidden;
+}
+
+.d2-belt-track {
+  display: flex;
   align-items: center;
-  gap: 14px 16px;
+  width: max-content;
   margin: 0;
-  padding: 14px 8px 18px;
+  padding: 9px 0;
   list-style: none;
+  animation: d2-belt var(--dur, 32s) linear infinite;
+}
+
+.d2-belt[data-dir='rev'] .d2-belt-track {
+  animation-direction: reverse;
+}
+
+/* 指している間は帯全体を止める。動いていても選べるようにする */
+.d2-belts:hover .d2-belt-track {
+  animation-play-state: paused;
 }
 
 .d2-cell {
   display: grid;
   place-items: center;
-  translate: var(--dx, 0) var(--dy, 0);
-  rotate: var(--rot, 0deg);
+  flex-shrink: 0;
+  margin-right: 28px;
   color: var(--d2-grey);
   transition: color 0.25s, scale 0.22s;
-  animation: d2-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(760ms + var(--n, 0) * 26ms);
 }
 
-/* 常時わずかに漂わせ、そこへ周期的な明滅を重ねる。
-   scale は hover 用に空けておくため、漂いは transform、明滅は filter で動かす */
 .d2-cell > svg {
-  width: var(--sz, 19px);
-  height: var(--sz, 19px);
+  width: 21px;
+  height: 21px;
   transition: opacity 0.25s;
-  animation-name: d2-drift, d2-blink;
-  animation-duration: 7s, 9s;
-  animation-timing-function: ease-in-out, linear;
-  animation-iteration-count: infinite, infinite;
-  animation-direction: alternate, normal;
-  animation-delay: calc(var(--n, 0) * -430ms), calc(2200ms + var(--n, 0) * 90ms);
 }
 
 /* 既定は単色。指したものだけ本来のブランド色になる */
 .d2-cell:hover {
   color: var(--brand);
-  scale: 1.32;
+  scale: 1.35;
 }
 
 /* ひとつを指している間、ほかは引く */
-.d2-cells:hover .d2-cell:not(:hover) > svg {
-  opacity: 0.32;
+.d2-belts:hover .d2-cell:not(:hover) > svg {
+  opacity: 0.34;
 }
 
 .d2-cell[data-state='off'] > svg {
   opacity: 0.14;
 }
 
-.d2-cells:hover .d2-cell[data-state='off'] > svg {
+.d2-belts:hover .d2-cell[data-state='off'] > svg {
   opacity: 0.1;
 }
 
@@ -636,7 +652,7 @@
 
 .d2-index-item > *:not(.d2-vline) {
   animation: d2-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(800ms + var(--i, 0) * 45ms);
+  animation-delay: calc(940ms + var(--i, 0) * 30ms);
 }
 
 .d2-index-item:hover {
@@ -697,10 +713,10 @@
   }
 }
 
-@keyframes d2-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
+/* 帯の送り。2 度描いた並びを半分送ると元の位置に重なる */
+@keyframes d2-belt {
+  to {
+    transform: translateX(-50%);
   }
 }
 
@@ -737,23 +753,6 @@
   from {
     font-variation-settings: 'wdth' 64, 'wght' 700;
     opacity: 0;
-  }
-}
-
-@keyframes d2-drift {
-  to {
-    transform: translate(2px, -5px);
-  }
-}
-
-@keyframes d2-blink {
-  0%,
-  86%,
-  100% {
-    filter: none;
-  }
-  92% {
-    filter: brightness(1.85);
   }
 }
 
