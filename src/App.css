@@ -23,8 +23,7 @@
 }
 
 /* ── 罫線 ──
-   border ではなく要素として持つことで、引かれる向き・順番・速度を制御できる。
-   読み込み時はまず横罫、次に縦罫が引かれ、そのあとに中身が入る */
+   border ではなく要素として持つことで、引かれる向き・順番・速度を制御できる */
 .d2-vline,
 .d2-hline {
   position: absolute;
@@ -39,7 +38,7 @@
   width: 1px;
   transform: scaleY(0);
   transform-origin: top;
-  animation: d2-draw-y 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: d2-draw-y 0.44s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .d2-hline {
@@ -49,32 +48,48 @@
   height: 1px;
   transform: scaleX(0);
   transform-origin: left;
-  animation: d2-draw-x 0.52s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: d2-draw-x 0.46s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* ── 左端の銘板 ── */
 .d2-rail {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 26px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 26px;
 }
 
 .d2-rail .d2-vline {
   left: auto;
   right: 0;
-  animation-delay: 220ms;
+  animation-delay: 180ms;
+}
+
+/* 縦組みは rotate、落下は translate と、別プロパティに分けている。
+   同じ transform に入れると回転ごとアニメーションしてしまう */
+.d2-rail-clock,
+.d2-rail-text {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  white-space: nowrap;
+  animation: d2-drop 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.d2-rail-clock {
+  font: 400 10px var(--d2-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.22em;
+  color: var(--d2-brass);
+  animation-delay: 300ms;
 }
 
 .d2-rail-text {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
   font: 500 10px var(--d2-display);
   letter-spacing: 0.3em;
   color: var(--d2-dim);
-  white-space: nowrap;
-  animation: d2-in 0.6s 700ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 380ms;
 }
 
 /* ── 面の構成 ── */
@@ -99,11 +114,11 @@
 }
 
 .d2-row--b {
-  grid-template-columns: 5fr 4fr 3fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .d2-row--b > .d2-hline {
-  animation-delay: 140ms;
+  animation-delay: 120ms;
 }
 
 /* ── モジュール ── */
@@ -116,7 +131,7 @@
 }
 
 .d2-mod .d2-vline {
-  animation-delay: calc(320ms + var(--i, 0) * 50ms);
+  animation-delay: calc(260ms + var(--i, 0) * 40ms);
 }
 
 /* 行の先頭には区切りの縦罫を引かない */
@@ -124,20 +139,38 @@
   display: none;
 }
 
-/* 罫線が引かれたあと、見出し → 中身 の順に立ち上がる */
 .d2-mod-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
   margin-bottom: clamp(10px, 1.4vh, 18px);
-  animation: d2-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(700ms + var(--i, 0) * 55ms);
 }
 
+/* 見出しは計器の銘板が通電するように明滅してから点く */
+.d2-mod-tag {
+  font: 600 10.5px var(--d2-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--d2-brass);
+  animation: d2-flicker 0.5s steps(1, end) backwards;
+  animation-delay: calc(430ms + var(--i, 0) * 45ms);
+}
+
+.d2-mod-meta {
+  font: 400 10.5px var(--d2-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--d2-dim);
+  white-space: nowrap;
+  animation: d2-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(560ms + var(--i, 0) * 45ms);
+}
+
+/* 見出しが点いたあと、中身が入る */
 .d2-mod > *:not(.d2-mod-head):not(.d2-vline) {
-  animation: d2-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(820ms + var(--i, 0) * 55ms);
+  animation: d2-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(580ms + var(--i, 0) * 45ms);
 }
 
 /* 角のトンボ。ホバーで伸びる */
@@ -173,21 +206,6 @@
   height: 15px;
 }
 
-.d2-mod-tag {
-  font: 600 10.5px var(--d2-display);
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--d2-brass);
-}
-
-.d2-mod-meta {
-  font: 400 10.5px var(--d2-display);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--d2-dim);
-  white-space: nowrap;
-}
-
 /* ── Identity ── */
 .d2-id-inner {
   display: flex;
@@ -209,7 +227,7 @@
   letter-spacing: -0.045em;
   line-height: 0.9;
   color: var(--d2-white);
-  animation: d2-expand 1.1s 880ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: d2-expand 1.05s 640ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 .d2-id-domain {
@@ -228,17 +246,32 @@
   color: var(--d2-white);
 }
 
-.d2-id-role {
-  margin-top: 12px;
-  font-size: 13px;
+.d2-id-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d2-id-facts li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
   color: var(--d2-grey);
 }
 
-/* 写真は暗く沈めず、額装した印画として置く。
-   マスクで覆うと被写体に影が落ちるため、減光ではなく枠で処理する */
+.d2-id-facts svg {
+  flex-shrink: 0;
+  color: var(--d2-brass);
+}
+
+/* 写真は暗く沈めず、額装した印画として置く */
 .d2-id-plate {
   flex: 0 0 auto;
-  width: clamp(88px, 13vw, 158px);
+  width: clamp(84px, 12vw, 148px);
   margin: 0;
   line-height: 0;
 }
@@ -258,6 +291,87 @@
   filter: none;
 }
 
+/* ── Gallery ── */
+.d2-shots {
+  position: relative;
+  flex: 1;
+  min-height: 150px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--d2-line);
+  background: var(--d2-panel);
+}
+
+.d2-shots img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: grayscale(1) sepia(0.42) hue-rotate(-10deg) saturate(1.35) contrast(1.04);
+  transition: opacity 0.9s ease, filter 0.45s ease;
+}
+
+.d2-shots img[data-on] {
+  opacity: 1;
+}
+
+.d2-shots:hover img {
+  filter: none;
+}
+
+.d2-shot-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 30px 14px 12px;
+  font-size: 12.5px;
+  color: var(--d2-white);
+  background: linear-gradient(to top, rgba(10, 10, 12, 0.88), transparent);
+}
+
+.d2-shot-cap svg {
+  flex-shrink: 0;
+  color: var(--d2-brass);
+}
+
+.d2-shot-note {
+  margin-left: auto;
+  font: 400 10px var(--d2-display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--d2-dim);
+}
+
+.d2-shot-ticks {
+  display: flex;
+  gap: 5px;
+  margin-top: 12px;
+}
+
+.d2-tick {
+  width: 28px;
+  height: 2px;
+  padding: 0;
+  background: var(--d2-line);
+  border: 0;
+  cursor: pointer;
+  transition: background 0.25s;
+}
+
+.d2-tick:hover {
+  background: var(--d2-dim);
+}
+
+.d2-tick[data-on] {
+  background: var(--d2-brass);
+}
+
 /* ── Works ── */
 .d2-work-list {
   margin: 0;
@@ -274,7 +388,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 5px 10px;
-  padding: 14px 0;
+  padding: 13px 0;
   transition: padding-left 0.25s;
 }
 
@@ -283,7 +397,7 @@
 }
 
 .d2-work-name {
-  font: 600 clamp(15px, 1.5vw, 19px) var(--d2-display);
+  font: 600 clamp(15px, 1.4vw, 18px) var(--d2-display);
   letter-spacing: -0.01em;
   color: var(--d2-white);
 }
@@ -333,7 +447,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .d2-cat {
@@ -365,53 +479,52 @@
   opacity: 0.75;
 }
 
-/* 21 個をちょうど 7 × 3 に組む。隙間そのものが罫線になる目地の組み方 */
+/* 格子には組まず、ゆらぎを持たせて散らす。
+   ゆらぎは index から決定的に生成しているので、再描画で位置は動かない */
 .d2-cells {
-  display: grid;
-  grid-template-columns: repeat(7, 46px);
-  gap: 1px;
-  width: max-content;
-  max-width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 16px;
   margin: 0;
-  padding: 0;
+  padding: 14px 8px 18px;
   list-style: none;
-  background: var(--d2-line);
-  border: 1px solid var(--d2-line);
 }
 
 .d2-cell {
   display: grid;
   place-items: center;
-  aspect-ratio: 1;
+  translate: var(--dx, 0) var(--dy, 0);
+  rotate: var(--rot, 0deg);
   color: var(--d2-grey);
-  background: var(--d2-black);
-  transition: color 0.25s, background 0.25s;
-  /* 左上から対角に立ち上がる */
-  animation: d2-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(1000ms + (var(--col, 0) + var(--row, 0)) * 42ms);
+  transition: color 0.25s, scale 0.22s;
+  animation: d2-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(760ms + var(--n, 0) * 26ms);
 }
 
-/* 盤面が生きているように、対角の走査が周期的に流れる。
-   transform は hover 用に空けておき、走査は filter だけを動かす */
+/* 常時わずかに漂わせ、そこへ周期的な明滅を重ねる。
+   scale は hover 用に空けておくため、漂いは transform、明滅は filter で動かす */
 .d2-cell > svg {
-  transition: transform 0.2s, opacity 0.25s;
-  animation: d2-scan 7s linear infinite;
-  animation-delay: calc(2600ms + (var(--col, 0) + var(--row, 0)) * 110ms);
+  width: var(--sz, 19px);
+  height: var(--sz, 19px);
+  transition: opacity 0.25s;
+  animation-name: d2-drift, d2-blink;
+  animation-duration: 7s, 9s;
+  animation-timing-function: ease-in-out, linear;
+  animation-iteration-count: infinite, infinite;
+  animation-direction: alternate, normal;
+  animation-delay: calc(var(--n, 0) * -430ms), calc(2200ms + var(--n, 0) * 90ms);
 }
 
 /* 既定は単色。指したものだけ本来のブランド色になる */
 .d2-cell:hover {
   color: var(--brand);
-  background: color-mix(in srgb, var(--brand) 13%, var(--d2-black));
-}
-
-.d2-cell:hover > svg {
-  transform: scale(1.2);
+  scale: 1.32;
 }
 
 /* ひとつを指している間、ほかは引く */
 .d2-cells:hover .d2-cell:not(:hover) > svg {
-  opacity: 0.34;
+  opacity: 0.32;
 }
 
 .d2-cell[data-state='off'] > svg {
@@ -424,13 +537,12 @@
 
 .d2-cell[data-state='on'] {
   color: var(--d2-white);
-  background: rgba(255, 255, 255, 0.05);
 }
 
 /* 指しているアイコンの名前を出す読み取り欄 */
 .d2-readout {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 12px;
   font: 500 11.5px var(--d2-display);
   letter-spacing: 0.14em;
   color: var(--d2-brass);
@@ -499,47 +611,6 @@
   color: var(--d2-dim);
 }
 
-/* ── Colophon ── */
-.d2-facts {
-  margin: 0;
-}
-
-.d2-fact {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid var(--d2-line-soft);
-}
-
-.d2-fact:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-
-.d2-fact dt {
-  font: 400 10.5px var(--d2-display);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--d2-dim);
-  white-space: nowrap;
-}
-
-.d2-fact dd {
-  margin: 0;
-  font-size: 12.5px;
-  color: var(--d2-white);
-  text-align: right;
-}
-
-.d2-clock {
-  font-family: var(--d2-display);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  color: var(--d2-brass);
-}
-
 /* ── Index ── */
 .d2-index {
   display: grid;
@@ -556,7 +627,7 @@
 }
 
 .d2-index-item .d2-vline {
-  animation-delay: 520ms;
+  animation-delay: 400ms;
 }
 
 .d2-index-item:first-child .d2-vline {
@@ -564,8 +635,8 @@
 }
 
 .d2-index-item > *:not(.d2-vline) {
-  animation: d2-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(980ms + var(--i, 0) * 55ms);
+  animation: d2-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(800ms + var(--i, 0) * 45ms);
 }
 
 .d2-index-item:hover {
@@ -619,10 +690,45 @@
   }
 }
 
+@keyframes d2-drop {
+  from {
+    opacity: 0;
+    translate: 0 -44px;
+  }
+}
+
 @keyframes d2-pop {
   from {
     opacity: 0;
-    transform: scale(0.84);
+    transform: scale(0.8);
+  }
+}
+
+/* 銘板が通電する明滅 */
+@keyframes d2-flicker {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  24% {
+    opacity: 0.1;
+  }
+  38% {
+    opacity: 1;
+  }
+  52% {
+    opacity: 0.25;
+  }
+  64% {
+    opacity: 1;
+  }
+  76% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
@@ -634,14 +740,19 @@
   }
 }
 
-/* 対角に流れる走査 */
-@keyframes d2-scan {
+@keyframes d2-drift {
+  to {
+    transform: translate(2px, -5px);
+  }
+}
+
+@keyframes d2-blink {
   0%,
-  82%,
+  86%,
   100% {
     filter: none;
   }
-  88% {
+  92% {
     filter: brightness(1.85);
   }
 }
@@ -674,8 +785,12 @@
     border-top: 1px solid var(--d2-line);
   }
 
+  .d2-shots {
+    min-height: 200px;
+  }
+
   .d2-id-plate {
-    width: min(28%, 132px);
+    width: min(28%, 128px);
   }
 
   .d2-index {
@@ -706,12 +821,6 @@
 
   .d2-id-plate {
     width: min(30%, 104px);
-  }
-}
-
-@media (max-width: 400px) {
-  .d2-cells {
-    grid-template-columns: repeat(7, 40px);
   }
 }
 
