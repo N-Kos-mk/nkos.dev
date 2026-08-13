@@ -1,241 +1,520 @@
-/* ── Layout ── */
-.wrapper {
-  position: relative;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.65s ease;
-}
+/* ============================================================
+   トップページ — 観測盤レイアウト
+   一画面に情報を敷き詰めた計器パネル。角丸カードは使わず、
+   1px の罫線で区切られたモジュールが画面を埋める。
+   有彩色は真鍮色ひとつだけに絞る。
+   ※ App.css はサイト全体に適用されるため、全クラスに d2- を付けている
+   ============================================================ */
 
-.wrapper--about-open {
-  transform: translateY(-48px);
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* ── Background orbs ── */
-.bg-orbs {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.18;
-  animation: float 12s ease-in-out infinite;
-}
-
-.orb-1 {
-  width: 600px;
-  height: 600px;
-  background: #6d28d9;
-  top: -200px;
-  left: -150px;
-  animation-delay: 0s;
-}
-
-.orb-2 {
-  width: 500px;
-  height: 500px;
-  background: #0ea5e9;
-  top: 10%;
-  right: -150px;
-  animation-delay: -4s;
-}
-
-.orb-3 {
-  width: 400px;
-  height: 400px;
-  background: #ec4899;
-  bottom: 5%;
-  left: 30%;
-  animation-delay: -8s;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px) scale(1); }
-  33%       { transform: translateY(-30px) scale(1.03); }
-  66%       { transform: translateY(20px) scale(0.97); }
-}
-
-/* ── Hero ── */
-.hero {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px 40px;
-  text-align: center;
-}
-
-.hero-content {
-  animation: fadeUp 0.8s ease both;
-}
-
-.eyebrow {
-  font-size: 13px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 24px;
-  opacity: 0.8;
-}
-
-.title {
-  font-size: clamp(56px, 12vw, 120px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin-bottom: 24px;
-}
-
-.title-main {
-  color: var(--text-h);
-}
-
-.title-accent {
-  color: var(--accent);
-}
-
-.title-dot-wrap {
-  display: inline-block;
-  /* 上70%・下8%をカット。上下の調整はここの数値を変える */
-  clip-path: inset(70% 0 8% 0);
-}
-
-.title-dot {
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.subtitle {
-  font-size: clamp(15px, 2vw, 18px);
-  color: var(--text);
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-/* ── Hub ── */
-.hub {
-  position: relative;
-  z-index: 1;
-  padding: 40px 24px 60px;
-}
-
-.hub-grid {
+.d2 {
+  min-height: 100dvh;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  max-width: 860px;
-  margin: 0 auto;
+  grid-template-columns: 46px minmax(0, 1fr);
+  background: var(--d2-black);
+  color: var(--d2-grey);
+  font-family: var(--d2-jp);
+  font-size: 16px;
+  line-height: 1.7;
 }
 
-.hub-card {
+.d2 :focus-visible {
+  outline: 1px solid var(--d2-brass);
+  outline-offset: 2px;
+}
+
+/* ── 左端の銘板 ── */
+.d2-rail {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 26px;
+  border-right: 1px solid var(--d2-line);
+}
+
+.d2-rail-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 500 10px var(--d2-display);
+  letter-spacing: 0.3em;
+  color: var(--d2-dim);
+  white-space: nowrap;
+}
+
+/* ── 面の構成 ── */
+.d2-main {
+  display: grid;
+  grid-template-rows: minmax(min-content, 1.2fr) minmax(min-content, 1fr) min-content;
+  min-width: 0;
+}
+
+.d2-row {
+  display: grid;
+  border-bottom: 1px solid var(--d2-line);
+  min-width: 0;
+}
+
+.d2-row--a {
+  grid-template-columns: 7fr 5fr;
+}
+
+.d2-row--b {
+  grid-template-columns: 5fr 4fr 3fr;
+}
+
+/* ── モジュール ── */
+.d2-mod {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 24px;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
-  animation: fadeUp 0.7s ease both;
-  animation-delay: var(--delay, 0ms);
-
-  &:hover {
-    border-color: var(--card-border-hover);
-    box-shadow: 0 0 24px var(--accent-glow);
-    transform: translateY(-3px);
-  }
+  min-width: 0;
+  padding: clamp(18px, 2.2vw, 32px);
+  animation: d2-wipe 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 85ms);
 }
 
-.hub-card-header {
+.d2-mod + .d2-mod {
+  border-left: 1px solid var(--d2-line);
+}
+
+/* 角のトンボ。ホバーで伸びる */
+.d2-mod::before,
+.d2-mod::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  opacity: 0;
+  transition: opacity 0.3s, width 0.3s, height 0.3s;
+  pointer-events: none;
+}
+
+.d2-mod::before {
+  top: 9px;
+  left: 9px;
+  border-top: 1px solid var(--d2-brass);
+  border-left: 1px solid var(--d2-brass);
+}
+
+.d2-mod::after {
+  right: 9px;
+  bottom: 9px;
+  border-right: 1px solid var(--d2-brass);
+  border-bottom: 1px solid var(--d2-brass);
+}
+
+.d2-mod:hover::before,
+.d2-mod:hover::after {
+  opacity: 0.8;
+  width: 15px;
+  height: 15px;
+}
+
+.d2-mod-head {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
+  margin-bottom: clamp(14px, 2.2vh, 26px);
 }
 
-.hub-card-label {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-h);
+.d2-mod-tag {
+  font: 600 10.5px var(--d2-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--d2-brass);
 }
 
-.hub-card-icon {
-  color: var(--accent);
-  flex-shrink: 0;
-  transition: transform 0.2s;
-
-  .hub-card:hover & {
-    transform: translateX(3px);
-  }
+.d2-mod-meta {
+  font: 400 10.5px var(--d2-display);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--d2-dim);
+  white-space: nowrap;
 }
 
-/* ── GitHub カード variant ── */
-.hub-card--github {
-  border-color: rgba(56, 189, 248, 0.15);
-
-  &:hover {
-    border-color: rgba(56, 189, 248, 0.45);
-    box-shadow: 0 0 24px rgba(56, 189, 248, 0.15);
-  }
-
-  .hub-card-icon {
-    color: #38bdf8;
-  }
+/* ── Identity ── */
+.d2-id {
+  overflow: hidden;
 }
 
-/* ── About Me カード variant ── */
-.hub-card--about {
-  border-color: rgba(52, 211, 153, 0.15);
-  text-align: left;
-
-  &:hover {
-    border-color: rgba(52, 211, 153, 0.45);
-    box-shadow: 0 0 24px rgba(52, 211, 153, 0.15);
-  }
-
-  .hub-card-icon {
-    color: #34d399;
-  }
+/* アバターは真鍮側に寄せた単色化。文字側へ向かって消える */
+.d2-id-photo {
+  position: absolute;
+  top: 50%;
+  right: -1%;
+  width: min(44%, 290px);
+  aspect-ratio: 1;
+  object-fit: cover;
+  transform: translateY(-50%);
+  filter: grayscale(1) sepia(0.55) hue-rotate(-12deg) saturate(1.5) contrast(1.15) brightness(0.78);
+  opacity: 0.5;
+  mask-image: linear-gradient(to left, #000 22%, transparent 92%);
+  pointer-events: none;
 }
 
-.hub-card-desc {
-  font-size: 13px;
-  color: var(--text);
-  opacity: 0.7;
-}
-
-/* ── Footer ── */
-.footer {
+/* 見出しは上、名前は面の下端に置く */
+.d2-id-body {
   position: relative;
-  z-index: 1;
-  text-align: center;
-  padding: 20px;
-  font-size: 13px;
-  color: var(--text);
-  opacity: 0.4;
-  border-top: 1px solid var(--card-border);
+  margin-top: auto;
+}
+
+.d2-id-name {
+  font-family: var(--d2-display);
+  font-size: clamp(46px, 6.4vw, 108px);
+  font-weight: 700;
+  font-variation-settings: 'wdth' 118, 'wght' 700;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  color: var(--d2-white);
+  animation: d2-expand 1.15s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.d2-id-domain {
+  margin-top: 16px;
+  font: 500 12px var(--d2-display);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--d2-brass);
+}
+
+.d2-id-dot {
+  transition: color 0.25s;
+}
+
+.d2-id-dot:hover {
+  color: var(--d2-white);
+}
+
+.d2-id-role {
+  margin-top: 14px;
+  font-size: 13.5px;
+  color: var(--d2-grey);
+}
+
+/* ── Focus ── */
+.d2-focus-title {
+  font-size: clamp(21px, 2.2vw, 31px);
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+  color: var(--d2-white);
+}
+
+.d2-focus-text {
+  margin-top: 14px;
+  max-width: 42ch;
+  font-size: 13.5px;
+  line-height: 2;
+  color: var(--d2-grey);
+}
+
+.d2-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: auto 0 0;
+  padding: 20px 0 0;
+  list-style: none;
+}
+
+.d2-tags li {
+  padding: 5px 9px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--d2-dim);
+  border: 1px solid var(--d2-line);
+}
+
+/* ── Stack ── */
+.d2-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.d2-cat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  font: 500 11.5px var(--d2-jp);
+  color: var(--d2-dim);
+  background: none;
+  border: 1px solid var(--d2-line);
+  cursor: pointer;
+  transition: color 0.22s, border-color 0.22s, background 0.22s;
+}
+
+.d2-cat:hover {
+  color: var(--d2-white);
+  border-color: var(--d2-dim);
+}
+
+.d2-cat[data-on] {
+  color: var(--d2-black);
+  background: var(--d2-brass);
+  border-color: var(--d2-brass);
+}
+
+.d2-cat-n {
+  font: 400 10px var(--d2-display);
+  opacity: 0.75;
+}
+
+.d2-cells {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d2-cell {
+  padding: 6px 9px;
+  font: 400 11.5px var(--d2-display);
+  letter-spacing: 0.02em;
+  color: var(--d2-grey);
+  background: var(--d2-panel);
+  border: 1px solid var(--d2-line-soft);
+  transition: opacity 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.d2-cell[data-state='off'] {
+  opacity: 0.2;
+}
+
+.d2-cell[data-state='on'] {
+  color: var(--d2-white);
+  border-color: rgba(210, 168, 87, 0.55);
+}
+
+/* ── Log ── */
+.d2-entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.d2-entries li + li {
+  border-top: 1px solid var(--d2-line-soft);
+}
+
+.d2-entry {
+  display: block;
+  padding: 13px 0;
+  transition: padding-left 0.25s;
+}
+
+.d2-entry:hover {
+  padding-left: 8px;
+}
+
+.d2-entry-date {
+  display: block;
+  font: 400 10.5px var(--d2-display);
+  letter-spacing: 0.16em;
+  color: var(--d2-brass);
+}
+
+.d2-entry-title {
+  display: block;
+  margin-top: 6px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--d2-white);
+}
+
+.d2-entry-text {
+  display: -webkit-box;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 1.75;
+  color: var(--d2-dim);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.d2-empty {
+  font-size: 12.5px;
+  color: var(--d2-dim);
+}
+
+/* ── Meta ── */
+.d2-facts {
+  margin: 0;
+}
+
+.d2-fact {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--d2-line-soft);
+}
+
+.d2-fact:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.d2-fact dt {
+  font-size: 11px;
+  color: var(--d2-dim);
+  white-space: nowrap;
+}
+
+.d2-fact dd {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--d2-white);
+  text-align: right;
+}
+
+.d2-clock {
+  font-family: var(--d2-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  color: var(--d2-brass);
+}
+
+/* ── Index ── */
+.d2-index {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  animation: d2-wipe 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 85ms);
+}
+
+.d2-index-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: clamp(16px, 2vw, 26px) clamp(18px, 2.2vw, 32px);
+  transition: background 0.3s;
+}
+
+.d2-index-item + .d2-index-item {
+  border-left: 1px solid var(--d2-line);
+}
+
+.d2-index-item:hover {
+  background: rgba(210, 168, 87, 0.07);
+}
+
+.d2-index-label {
+  font: 600 clamp(15px, 1.5vw, 20px) var(--d2-display);
+  letter-spacing: -0.01em;
+  color: var(--d2-white);
+}
+
+.d2-index-note {
+  font-size: 11px;
+  color: var(--d2-dim);
+}
+
+.d2-index-arrow {
+  align-self: center;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--d2-dim);
+  transition: color 0.25s, transform 0.25s;
+}
+
+.d2-index-item:hover .d2-index-arrow {
+  color: var(--d2-brass);
+  transform: translate(3px, -3px);
 }
 
 /* ── Animations ── */
-@keyframes fadeUp {
+@keyframes d2-wipe {
   from {
+    clip-path: inset(0 0 100% 0);
     opacity: 0;
-    transform: translateY(20px);
   }
   to {
+    clip-path: inset(0 0 0 0);
     opacity: 1;
-    transform: translateY(0);
+  }
+}
+
+/* 可変フォントの字幅で名前が定位置に広がる */
+@keyframes d2-expand {
+  from {
+    font-variation-settings: 'wdth' 64, 'wght' 700;
+    opacity: 0;
+  }
+  to {
+    font-variation-settings: 'wdth' 118, 'wght' 700;
+    opacity: 1;
+  }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1000px) {
+  .d2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .d2-rail {
+    display: none;
+  }
+
+  .d2-main {
+    grid-template-rows: none;
+  }
+
+  .d2-row--a,
+  .d2-row--b {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .d2-mod + .d2-mod {
+    border-left: 0;
+    border-top: 1px solid var(--d2-line);
+  }
+
+  .d2-id-photo {
+    width: min(40%, 200px);
+  }
+
+  .d2-index {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .d2-index-item:nth-child(n + 3) {
+    border-top: 1px solid var(--d2-line);
+  }
+
+  .d2-index-item:nth-child(odd) {
+    border-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .d2-index {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .d2-index-item + .d2-index-item {
+    border-left: 0;
+    border-top: 1px solid var(--d2-line);
+  }
+
+  .d2-id-photo {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d2 *,
+  .d2 *::before,
+  .d2 *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
