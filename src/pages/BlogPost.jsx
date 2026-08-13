@@ -23,10 +23,10 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="blog-page">
-        <div className="blog-inner">
-          <Link to="/blog" className="blog-back"><ArrowLeft size={14} /> Blog</Link>
-          <p className="blog-not-found">記事が見つかりませんでした。</p>
+      <div className="old-blog-page">
+        <div className="old-blog-inner">
+          <Link to="/blog" className="old-blog-back"><ArrowLeft size={14} /> Blog</Link>
+          <p className="old-blog-not-found">記事が見つかりませんでした。</p>
         </div>
       </div>
     )
@@ -37,39 +37,39 @@ export default function BlogPost() {
   return (
     <>
       {/* スクロール時に現れるミニバー */}
-      <div className={`blog-sticky${sticky ? ' blog-sticky--visible' : ''}`}>
-        <Link to="/blog" className="blog-back">
+      <div className={`old-blog-sticky${sticky ? ' old-blog-sticky--visible' : ''}`}>
+        <Link to="/blog" className="old-blog-back">
           <ArrowLeft size={14} /> Blog
         </Link>
-        <span className="blog-sticky-title">{post.title}</span>
+        <span className="old-blog-sticky-title">{post.title}</span>
       </div>
 
-      <div className="blog-page">
+      <div className="old-blog-page">
         <div className="bg-orbs" aria-hidden="true">
           <div className="orb orb-1" />
           <div className="orb orb-2" />
         </div>
 
-        <div className="blog-inner">
-          <Link to="/blog" className="blog-back" ref={backRef}>
+        <div className="old-blog-inner">
+          <Link to="/blog" className="old-blog-back" ref={backRef}>
             <ArrowLeft size={14} />
             Blog
           </Link>
 
-          <article className="post">
-            <header className="post-header">
-              <time className="post-date">{post.date}</time>
-              <h1 className="post-title">{post.title}</h1>
+          <article className="old-post">
+            <header className="old-post-header">
+              <time className="old-post-date">{post.date}</time>
+              <h1 className="old-post-title">{post.title}</h1>
               {post.excerpt && (
-                <p className="post-excerpt">{post.excerpt}</p>
+                <p className="old-post-excerpt">{post.excerpt}</p>
               )}
             </header>
-            <div className="prose">
+            <div className="old-prose">
               <Component />
             </div>
           </article>
 
-          <Link to="/blog" className="post-footer-back">
+          <Link to="/blog" className="old-post-footer-back">
             <ArrowLeft size={14} />
             Blog 一覧へ
           </Link>

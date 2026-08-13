@@ -3,56 +3,56 @@
    一画面に情報を敷き詰めた計器パネル。角丸カードは使わず、
    1px の罫線で区切られたモジュールが画面を埋める。
    有彩色は真鍮色ひとつだけに絞る。
-   ※ App.css はサイト全体に適用されるため、全クラスに d2- を付けている
+   ※ App.css はサイト全体に適用される。旧デザインのページ側は old- で隔離してある
    ============================================================ */
 
-.d2 {
+.board {
   min-height: 100dvh;
   display: grid;
   grid-template-columns: 46px minmax(0, 1fr);
-  background: var(--d2-black);
-  color: var(--d2-grey);
-  font-family: var(--d2-jp);
+  background: var(--ink);
+  color: var(--grey);
+  font-family: var(--jp);
   font-size: 16px;
   line-height: 1.7;
 }
 
-.d2 :focus-visible {
-  outline: 1px solid var(--d2-brass);
+.board :focus-visible {
+  outline: 1px solid var(--brass);
   outline-offset: 2px;
 }
 
 /* ── 罫線 ──
    border ではなく要素として持つことで、引かれる向き・順番・速度を制御できる */
-.d2-vline,
-.d2-hline {
+.vline,
+.hline {
   position: absolute;
-  background: var(--d2-line);
+  background: var(--line);
   pointer-events: none;
 }
 
-.d2-vline {
+.vline {
   top: 0;
   bottom: 0;
   left: 0;
   width: 1px;
   transform: scaleY(0);
   transform-origin: top;
-  animation: d2-draw-y 0.44s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: draw-y 0.44s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.d2-hline {
+.hline {
   left: 0;
   right: 0;
   bottom: 0;
   height: 1px;
   transform: scaleX(0);
   transform-origin: left;
-  animation: d2-draw-x 0.46s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: draw-x 0.46s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* ── 左端の銘板 ── */
-.d2-rail {
+.rail {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -61,7 +61,7 @@
   padding: 24px 0 26px;
 }
 
-.d2-rail .d2-vline {
+.rail .vline {
   left: auto;
   right: 0;
   animation-delay: 180ms;
@@ -69,31 +69,31 @@
 
 /* 縦組みは rotate、落下は translate と、別プロパティに分けている。
    同じ transform に入れると回転ごとアニメーションしてしまう */
-.d2-rail-clock,
-.d2-rail-text {
+.rail-clock,
+.rail-text {
   writing-mode: vertical-rl;
   rotate: 180deg;
   white-space: nowrap;
-  animation: d2-drop 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: drop-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-.d2-rail-clock {
-  font: 400 10px var(--d2-display);
+.rail-clock {
+  font: 400 10px var(--display);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.22em;
-  color: var(--d2-brass);
+  color: var(--brass);
   animation-delay: 300ms;
 }
 
-.d2-rail-text {
-  font: 500 10px var(--d2-display);
+.rail-text {
+  font: 500 10px var(--display);
   letter-spacing: 0.3em;
-  color: var(--d2-dim);
+  color: var(--dim);
   animation-delay: 380ms;
 }
 
 /* ── 面の構成 ── */
-.d2-main {
+.board-main {
   display: grid;
   grid-template-rows: min-content minmax(min-content, 1fr) min-content;
   min-width: 0;
@@ -104,44 +104,44 @@
    面の下端に着く要素（注記帯・読み取り欄・リンク）を各モジュールに
    ひとつ持たせてあるので、伸びても宙に浮いた空白にはならない */
 @media (min-width: 1001px) and (min-height: 760px) {
-  .d2 {
+  .board {
     height: 100dvh;
     overflow: hidden;
   }
 
-  .d2-main {
+  .board-main {
     grid-template-rows: minmax(0, 0.85fr) minmax(0, 1fr) min-content;
   }
 
-  .d2-id-facts {
+  .id-facts {
     margin-top: auto;
   }
 }
 
-.d2-row {
+.row {
   position: relative;
   display: grid;
   min-width: 0;
 }
 
-.d2-row--a {
+.row--a {
   grid-template-columns: 7fr 5fr;
 }
 
-.d2-row--a > .d2-hline {
+.row--a > .hline {
   animation-delay: 40ms;
 }
 
-.d2-row--b {
+.row--b {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.d2-row--b > .d2-hline {
+.row--b > .hline {
   animation-delay: 120ms;
 }
 
 /* ── モジュール ── */
-.d2-mod {
+.mod {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -149,16 +149,16 @@
   padding: clamp(16px, 1.8vw, 26px);
 }
 
-.d2-mod .d2-vline {
+.mod .vline {
   animation-delay: calc(260ms + var(--i, 0) * 40ms);
 }
 
 /* 行の先頭には区切りの縦罫を引かない */
-.d2-row > .d2-mod:first-of-type .d2-vline {
+.row > .mod:first-of-type .vline {
   display: none;
 }
 
-.d2-mod-head {
+.mod-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -167,34 +167,34 @@
 }
 
 /* 見出しは計器の銘板が通電するように明滅してから点く */
-.d2-mod-tag {
-  font: 600 10.5px var(--d2-display);
+.mod-tag {
+  font: 600 10.5px var(--display);
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--d2-brass);
-  animation: d2-flicker 0.42s steps(1, end) backwards;
+  color: var(--brass);
+  animation: flicker 0.42s steps(1, end) backwards;
   animation-delay: calc(400ms + var(--i, 0) * 45ms);
 }
 
-.d2-mod-meta {
-  font: 400 10.5px var(--d2-display);
+.mod-meta {
+  font: 400 10.5px var(--display);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--d2-dim);
+  color: var(--dim);
   white-space: nowrap;
-  animation: d2-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation: fade-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: calc(900ms + var(--i, 0) * 45ms);
 }
 
 /* 見出しの明滅が収まってから、ひと呼吸おいて中身が入る */
-.d2-mod > *:not(.d2-mod-head):not(.d2-vline) {
-  animation: d2-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+.mod > *:not(.mod-head):not(.vline) {
+  animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: calc(960ms + var(--i, 0) * 45ms);
 }
 
 /* 角のトンボ。ホバーで伸びる */
-.d2-mod::before,
-.d2-mod::after {
+.mod::before,
+.mod::after {
   content: '';
   position: absolute;
   width: 8px;
@@ -204,137 +204,137 @@
   pointer-events: none;
 }
 
-.d2-mod::before {
+.mod::before {
   top: 9px;
   left: 9px;
-  border-top: 1px solid var(--d2-brass);
-  border-left: 1px solid var(--d2-brass);
+  border-top: 1px solid var(--brass);
+  border-left: 1px solid var(--brass);
 }
 
-.d2-mod::after {
+.mod::after {
   right: 9px;
   bottom: 9px;
-  border-right: 1px solid var(--d2-brass);
-  border-bottom: 1px solid var(--d2-brass);
+  border-right: 1px solid var(--brass);
+  border-bottom: 1px solid var(--brass);
 }
 
-.d2-mod:hover::before,
-.d2-mod:hover::after {
+.mod:hover::before,
+.mod:hover::after {
   opacity: 0.8;
   width: 15px;
   height: 15px;
 }
 
 /* ── Identity ── */
-.d2-id-inner {
+.id-inner {
   display: flex;
   align-items: flex-end;
   gap: clamp(16px, 2.5vw, 32px);
 }
 
-.d2-id-body {
+.id-body {
   min-width: 0;
   flex: 1;
 }
 
-.d2-id-name {
-  font-family: var(--d2-display);
+.id-name {
+  font-family: var(--display);
   font-size: clamp(46px, 6.2vw, 102px);
   font-weight: 700;
   font-variation-settings: 'wdth' 118, 'wght' 700;
   letter-spacing: -0.045em;
   line-height: 0.9;
-  color: var(--d2-white);
-  animation: d2-expand 1.05s 1020ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  color: var(--paper);
+  animation: expand 1.05s 1020ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
-.d2-id-domain {
+.id-domain {
   margin-top: 14px;
-  font: 500 12px var(--d2-display);
+  font: 500 12px var(--display);
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--d2-brass);
+  color: var(--brass);
 }
 
-.d2-id-dot {
+.id-dot {
   transition: color 0.25s;
 }
 
-.d2-id-dot:hover {
-  color: var(--d2-white);
+.id-dot:hover {
+  color: var(--paper);
 }
 
 /* 面の下端に敷く注記帯。上に罫線を通し、盤面の一部として据える */
-.d2-id-facts {
+.id-facts {
   display: flex;
   flex-wrap: wrap;
   gap: 12px 28px;
   margin: 22px 0 0;
   padding: 16px 0 0;
-  border-top: 1px solid var(--d2-line-soft);
+  border-top: 1px solid var(--line-soft);
   list-style: none;
 }
 
-.d2-id-facts li {
+.id-facts li {
   display: flex;
   align-items: center;
   gap: 11px;
   font-size: 12.5px;
-  color: var(--d2-grey);
+  color: var(--grey);
 }
 
 /* アイコンは直に置かず枠に収める。1px の線でできた盤面の言語に揃える */
-.d2-fact-mark {
+.fact-mark {
   display: grid;
   place-items: center;
   flex-shrink: 0;
   width: 24px;
   height: 24px;
-  color: var(--d2-brass);
-  border: 1px solid var(--d2-line);
+  color: var(--brass);
+  border: 1px solid var(--line);
   transition: border-color 0.25s, background 0.25s;
 }
 
-.d2-id-facts li:hover .d2-fact-mark {
+.id-facts li:hover .fact-mark {
   border-color: rgba(210, 168, 87, 0.5);
   background: rgba(210, 168, 87, 0.08);
 }
 
 /* 写真は暗く沈めず、額装した印画として置く */
-.d2-id-plate {
+.id-plate {
   flex: 0 0 auto;
   width: clamp(84px, 12vw, 148px);
   margin: 0;
   line-height: 0;
 }
 
-.d2-id-plate img {
+.id-plate img {
   display: block;
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border: 1px solid var(--d2-line);
+  border: 1px solid var(--line);
   /* 明度は落とさず、色味だけ真鍮側へ寄せる */
   filter: grayscale(1) sepia(0.42) hue-rotate(-10deg) saturate(1.35) contrast(1.04);
   transition: filter 0.45s ease;
 }
 
-.d2-id-plate:hover img {
+.id-plate:hover img {
   filter: none;
 }
 
 /* ── Gallery ── */
-.d2-shots {
+.shots {
   position: relative;
   flex: 1;
   min-height: 190px;
   margin: 0;
   overflow: hidden;
-  border: 1px solid var(--d2-line);
-  background: var(--d2-panel);
+  border: 1px solid var(--line);
+  background: var(--panel);
 }
 
-.d2-shots img {
+.shots img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -345,15 +345,15 @@
   transition: opacity 0.9s ease, filter 0.45s ease;
 }
 
-.d2-shots img[data-on] {
+.shots img[data-on] {
   opacity: 1;
 }
 
-.d2-shots:hover img {
+.shots:hover img {
   filter: none;
 }
 
-.d2-shot-cap {
+.shot-cap {
   position: absolute;
   left: 0;
   right: 0;
@@ -363,60 +363,60 @@
   gap: 8px;
   padding: 30px 14px 12px;
   font-size: 12.5px;
-  color: var(--d2-white);
+  color: var(--paper);
   background: linear-gradient(to top, rgba(10, 10, 12, 0.88), transparent);
 }
 
-.d2-shot-cap svg {
+.shot-cap svg {
   flex-shrink: 0;
-  color: var(--d2-brass);
+  color: var(--brass);
 }
 
-.d2-shot-note {
+.shot-note {
   margin-left: auto;
-  font: 400 10px var(--d2-display);
+  font: 400 10px var(--display);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--d2-dim);
+  color: var(--dim);
 }
 
-.d2-shot-ticks {
+.shot-ticks {
   display: flex;
   gap: 5px;
   margin-top: 12px;
 }
 
-.d2-tick {
+.tick {
   width: 28px;
   height: 2px;
   padding: 0;
-  background: var(--d2-line);
+  background: var(--line);
   border: 0;
   cursor: pointer;
   transition: background 0.25s;
 }
 
-.d2-tick:hover {
-  background: var(--d2-dim);
+.tick:hover {
+  background: var(--dim);
 }
 
-.d2-tick[data-on] {
-  background: var(--d2-brass);
+.tick[data-on] {
+  background: var(--brass);
 }
 
 /* ── Works ── */
-.d2-work-list {
+.work-list {
   margin: 0;
   padding: 0;
   list-style: none;
-  border-top: 1px solid var(--d2-line-soft);
+  border-top: 1px solid var(--line-soft);
 }
 
-.d2-work-list li {
-  border-bottom: 1px solid var(--d2-line-soft);
+.work-list li {
+  border-bottom: 1px solid var(--line-soft);
 }
 
-.d2-work {
+.work {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 5px 10px;
@@ -424,96 +424,96 @@
   transition: padding-left 0.25s;
 }
 
-.d2-work:hover {
+.work:hover {
   padding-left: 8px;
 }
 
-.d2-work-name {
-  font: 600 clamp(15px, 1.4vw, 18px) var(--d2-display);
+.work-name {
+  font: 600 clamp(15px, 1.4vw, 18px) var(--display);
   letter-spacing: -0.01em;
-  color: var(--d2-white);
+  color: var(--paper);
 }
 
-.d2-work-arrow {
+.work-arrow {
   align-self: center;
-  color: var(--d2-dim);
+  color: var(--dim);
   transition: color 0.25s, transform 0.25s;
 }
 
-.d2-work:hover .d2-work-arrow {
-  color: var(--d2-brass);
+.work:hover .work-arrow {
+  color: var(--brass);
   transform: translate(3px, -3px);
 }
 
-.d2-work-note {
+.work-note {
   grid-column: 1 / -1;
   font-size: 12.5px;
   line-height: 1.75;
-  color: var(--d2-dim);
+  color: var(--dim);
 }
 
-.d2-more {
+.more {
   display: flex;
   align-items: baseline;
   gap: 10px;
   margin-top: auto;
   padding-top: 18px;
   font-size: 12.5px;
-  color: var(--d2-grey);
+  color: var(--grey);
   transition: color 0.2s;
 }
 
-.d2-more:hover {
-  color: var(--d2-brass);
+.more:hover {
+  color: var(--brass);
 }
 
-.d2-more-note {
-  font: 400 10.5px var(--d2-display);
+.more-note {
+  font: 400 10.5px var(--display);
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--d2-dim);
+  color: var(--dim);
 }
 
 /* ── Stack ── */
-.d2-cats {
+.cats {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   margin-bottom: 10px;
 }
 
-.d2-cat {
+.cat {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   padding: 5px 10px;
-  font: 500 11.5px var(--d2-jp);
-  color: var(--d2-dim);
+  font: 500 11.5px var(--jp);
+  color: var(--dim);
   background: none;
-  border: 1px solid var(--d2-line);
+  border: 1px solid var(--line);
   cursor: pointer;
   transition: color 0.22s, border-color 0.22s, background 0.22s;
 }
 
-.d2-cat:hover {
-  color: var(--d2-white);
-  border-color: var(--d2-dim);
+.cat:hover {
+  color: var(--paper);
+  border-color: var(--dim);
 }
 
-.d2-cat[data-on] {
-  color: var(--d2-black);
-  background: var(--d2-brass);
-  border-color: var(--d2-brass);
+.cat[data-on] {
+  color: var(--ink);
+  background: var(--brass);
+  border-color: var(--brass);
 }
 
-.d2-cat-n {
-  font: 400 10px var(--d2-display);
+.cat-n {
+  font: 400 10px var(--display);
   opacity: 0.75;
 }
 
 /* 並べも送りもせず、面のなかに散らして漂わせる。
    位置は粗い格子を下敷きにずらしてあり、面の高さいっぱいに広がる */
-.d2-float {
+.icon-field {
   position: relative;
   flex: 1;
   min-height: 170px;
@@ -526,7 +526,7 @@
    別プロパティに分けている。同じ transform に入れると互いを打ち消す */
 /* 触り判定は 40px の正方形で揃える。判定を svg 任せにすると
    字形の違いがそのまま当たり判定の差になり、拾いやすさがばらつく */
-.d2-icon {
+.icon {
   position: absolute;
   left: var(--x, 50%);
   top: var(--y, 50%);
@@ -535,18 +535,18 @@
   width: 40px;
   height: 40px;
   translate: -50% -50%;
-  color: var(--d2-grey);
+  color: var(--grey);
   transition: color 0.25s, scale 0.22s;
-  animation: d2-float var(--dur, 8s) ease-in-out infinite alternate;
+  animation: drift var(--dur, 8s) ease-in-out infinite alternate;
   animation-delay: var(--delay, 0s);
 }
 
-.d2-icon[data-rev] {
+.icon[data-rev] {
   animation-direction: alternate-reverse;
 }
 
 /* 判定を親の正方形に一本化するため、svg 自身は当たりを取らない */
-.d2-icon > svg {
+.icon > svg {
   width: var(--sz, 19px);
   height: var(--sz, 19px);
   pointer-events: none;
@@ -554,44 +554,44 @@
 }
 
 /* 指している間は全体を止める。漂っていても選べるようにする */
-.d2-float:hover .d2-icon {
+.icon-field:hover .icon {
   animation-play-state: paused;
 }
 
 /* 既定は単色。指したものだけ本来のブランド色になる */
-.d2-icon:hover {
+.icon:hover {
   z-index: 2;
   color: var(--brand);
   scale: 1.42;
 }
 
 /* ひとつを指している間、ほかは引く */
-.d2-float:hover .d2-icon:not(:hover) > svg {
+.icon-field:hover .icon:not(:hover) > svg {
   opacity: 0.32;
 }
 
-.d2-icon[data-state='off'] > svg {
+.icon[data-state='off'] > svg {
   opacity: 0.14;
 }
 
-.d2-float:hover .d2-icon[data-state='off'] > svg {
+.icon-field:hover .icon[data-state='off'] > svg {
   opacity: 0.1;
 }
 
-.d2-icon[data-state='on'] {
-  color: var(--d2-white);
+.icon[data-state='on'] {
+  color: var(--paper);
 }
 
 /* 指しているアイコンの名前を出す読み取り欄 */
-.d2-readout {
+.readout {
   margin-top: auto;
   padding-top: 12px;
-  font: 500 11.5px var(--d2-display);
+  font: 500 11.5px var(--display);
   letter-spacing: 0.14em;
-  color: var(--d2-brass);
+  color: var(--brass);
 }
 
-.d2-sr {
+.sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -603,64 +603,64 @@
 }
 
 /* ── Log ── */
-.d2-entries {
+.entries {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.d2-entries li + li {
-  border-top: 1px solid var(--d2-line-soft);
+.entries li + li {
+  border-top: 1px solid var(--line-soft);
 }
 
-.d2-entry {
+.entry {
   display: block;
   padding: 13px 0;
   transition: padding-left 0.25s;
 }
 
-.d2-entry:hover {
+.entry:hover {
   padding-left: 8px;
 }
 
-.d2-entry-date {
+.entry-date {
   display: block;
-  font: 400 10.5px var(--d2-display);
+  font: 400 10.5px var(--display);
   letter-spacing: 0.16em;
-  color: var(--d2-brass);
+  color: var(--brass);
 }
 
-.d2-entry-title {
+.entry-title {
   display: block;
   margin-top: 6px;
   font-size: 14.5px;
   font-weight: 500;
-  color: var(--d2-white);
+  color: var(--paper);
 }
 
-.d2-entry-text {
+.entry-text {
   display: -webkit-box;
   margin-top: 5px;
   font-size: 12px;
   line-height: 1.75;
-  color: var(--d2-dim);
+  color: var(--dim);
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.d2-empty {
+.empty {
   font-size: 12.5px;
-  color: var(--d2-dim);
+  color: var(--dim);
 }
 
 /* ── Index ── */
-.d2-index {
+.index-nav {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
 
-.d2-index-item {
+.index-item {
   position: relative;
   display: flex;
   align-items: baseline;
@@ -669,66 +669,66 @@
   transition: background 0.3s;
 }
 
-.d2-index-item .d2-vline {
+.index-item .vline {
   animation-delay: 400ms;
 }
 
-.d2-index-item:first-child .d2-vline {
+.index-item:first-child .vline {
   display: none;
 }
 
 /* 4 つを左から順に立ち上げるための順番 */
-.d2-index-item:nth-child(1) {
+.index-item:nth-child(1) {
   --k: 0;
 }
 
-.d2-index-item:nth-child(2) {
+.index-item:nth-child(2) {
   --k: 1;
 }
 
-.d2-index-item:nth-child(3) {
+.index-item:nth-child(3) {
   --k: 2;
 }
 
-.d2-index-item:nth-child(4) {
+.index-item:nth-child(4) {
   --k: 3;
 }
 
-.d2-index-item > *:not(.d2-vline) {
-  animation: d2-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+.index-item > *:not(.vline) {
+  animation: fade-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
   animation-delay: calc(1000ms + var(--k, 0) * 75ms);
 }
 
 /* 英字だけは左から滑り込ませる。日本語と矢印は従来どおり立ち上げる */
-.d2-index-item > .d2-index-label {
-  animation-name: d2-in-left;
+.index-item > .index-label {
+  animation-name: fade-in-left;
 }
 
-.d2-index-item:hover {
+.index-item:hover {
   background: rgba(210, 168, 87, 0.07);
 }
 
-.d2-index-label {
-  font: 600 clamp(15px, 1.5vw, 20px) var(--d2-display);
+.index-label {
+  font: 600 clamp(15px, 1.5vw, 20px) var(--display);
   letter-spacing: -0.01em;
-  color: var(--d2-white);
+  color: var(--paper);
 }
 
-.d2-index-note {
+.index-note {
   font-size: 11px;
-  color: var(--d2-dim);
+  color: var(--dim);
 }
 
-.d2-index-arrow {
+.index-arrow {
   align-self: center;
   margin-left: auto;
   flex-shrink: 0;
-  color: var(--d2-dim);
+  color: var(--dim);
   transition: color 0.25s, transform 0.25s;
 }
 
-.d2-index-item:hover .d2-index-arrow {
-  color: var(--d2-brass);
+.index-item:hover .index-arrow {
+  color: var(--brass);
   transform: translate(3px, -3px);
 }
 
@@ -736,33 +736,33 @@
    fill-mode は原則 backwards。forwards にすると終了値が固定され、
    フィルタ時の減光など通常のスタイルが効かなくなる。
    罫線だけは引き終えた状態を保つ必要があるため forwards を使う */
-@keyframes d2-draw-x {
+@keyframes draw-x {
   to {
     transform: scaleX(1);
   }
 }
 
-@keyframes d2-draw-y {
+@keyframes draw-y {
   to {
     transform: scaleY(1);
   }
 }
 
-@keyframes d2-in {
+@keyframes fade-in {
   from {
     opacity: 0;
     transform: translateY(10px);
   }
 }
 
-@keyframes d2-in-left {
+@keyframes fade-in-left {
   from {
     opacity: 0;
     transform: translateX(-24px);
   }
 }
 
-@keyframes d2-drop {
+@keyframes drop-in {
   from {
     opacity: 0;
     translate: 0 -44px;
@@ -770,7 +770,7 @@
 }
 
 /* 漂い。速さ・開始位置・進行方向に加えて、振れ幅も個体ごとに変える */
-@keyframes d2-float {
+@keyframes drift {
   0% {
     transform: translate(0, 0);
   }
@@ -786,7 +786,7 @@
 }
 
 /* 銘板が通電する明滅 */
-@keyframes d2-flicker {
+@keyframes flicker {
   0% {
     opacity: 0;
   }
@@ -814,7 +814,7 @@
 }
 
 /* 可変フォントの字幅で名前が定位置に広がる */
-@keyframes d2-expand {
+@keyframes expand {
   from {
     font-variation-settings: 'wdth' 64, 'wght' 700;
     opacity: 0;
@@ -823,75 +823,75 @@
 
 /* ── Responsive ── */
 @media (max-width: 1000px) {
-  .d2 {
+  .board {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .d2-rail {
+  .rail {
     display: none;
   }
 
-  .d2-main {
+  .board-main {
     grid-template-rows: none;
   }
 
-  .d2-row--a,
-  .d2-row--b {
+  .row--a,
+  .row--b {
     grid-template-columns: minmax(0, 1fr);
   }
 
   /* 縦積みになるため、区切りは縦罫から上辺の罫線に切り替える */
-  .d2-mod .d2-vline {
+  .mod .vline {
     display: none;
   }
 
-  .d2-mod + .d2-mod {
-    border-top: 1px solid var(--d2-line);
+  .mod + .mod {
+    border-top: 1px solid var(--line);
   }
 
-  .d2-shots {
+  .shots {
     min-height: 200px;
   }
 
-  .d2-id-plate {
+  .id-plate {
     width: min(28%, 128px);
   }
 
-  .d2-index {
+  .index-nav {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .d2-index-item:nth-child(n + 3) {
-    border-top: 1px solid var(--d2-line);
+  .index-item:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
   }
 
-  .d2-index-item:nth-child(odd) .d2-vline {
+  .index-item:nth-child(odd) .vline {
     display: none;
   }
 }
 
 @media (max-width: 560px) {
-  .d2-index {
+  .index-nav {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .d2-index-item .d2-vline {
+  .index-item .vline {
     display: none;
   }
 
-  .d2-index-item + .d2-index-item {
-    border-top: 1px solid var(--d2-line);
+  .index-item + .index-item {
+    border-top: 1px solid var(--line);
   }
 
-  .d2-id-plate {
+  .id-plate {
     width: min(30%, 104px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .d2 *,
-  .d2 *::before,
-  .d2 *::after {
+  .board *,
+  .board *::before,
+  .board *::after {
     animation-duration: 0.001ms !important;
     animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;

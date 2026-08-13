@@ -10,7 +10,7 @@ import {
 import { posts } from './lib/blog.js'
 import './App.css'
 
-/* 既存ページと App.css のクラス名が衝突しないよう、すべて d2- を接頭辞にしている */
+/* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
 
 const GITHUB = 'https://github.com/N-Kos-mk'
 const REPO = 'https://github.com/n-kos-mk/nkos.dev'
@@ -166,11 +166,11 @@ const fmtDate = value => {
 }
 
 const brandColor = item =>
-  item.icon && !DARK_ICON_SLUGS.has(item.icon.slug) ? `#${item.icon.hex}` : 'var(--d2-white)'
+  item.icon && !DARK_ICON_SLUGS.has(item.icon.slug) ? `#${item.icon.hex}` : 'var(--paper)'
 
 /* 罫線。border ではなく要素にすることで、引かれる向きと順番を制御できる */
-const VLine = () => <span className="d2-vline" aria-hidden="true" />
-const HLine = () => <span className="d2-hline" aria-hidden="true" />
+const VLine = () => <span className="vline" aria-hidden="true" />
+const HLine = () => <span className="hline" aria-hidden="true" />
 
 function StackIcon({ item }) {
   if (item.Icon) {
@@ -186,11 +186,11 @@ function StackIcon({ item }) {
 
 function Module({ tag, meta, className = '', order, children }) {
   return (
-    <section className={`d2-mod ${className}`} style={{ '--i': order }}>
+    <section className={`mod ${className}`} style={{ '--i': order }}>
       <VLine />
-      <header className="d2-mod-head">
-        <span className="d2-mod-tag">{tag}</span>
-        {meta && <span className="d2-mod-meta">{meta}</span>}
+      <header className="mod-head">
+        <span className="mod-tag">{tag}</span>
+        {meta && <span className="mod-meta">{meta}</span>}
       </header>
       {children}
     </section>
@@ -200,17 +200,17 @@ function Module({ tag, meta, className = '', order, children }) {
 function WorkItem({ work }) {
   const inner = (
     <>
-      <span className="d2-work-name">{work.name}</span>
-      <ArrowUpRight className="d2-work-arrow" size={15} />
-      <span className="d2-work-note">{work.note}</span>
+      <span className="work-name">{work.name}</span>
+      <ArrowUpRight className="work-arrow" size={15} />
+      <span className="work-note">{work.note}</span>
     </>
   )
   return work.href ? (
-    <a className="d2-work" href={work.href} target="_blank" rel="noopener noreferrer">
+    <a className="work" href={work.href} target="_blank" rel="noopener noreferrer">
       {inner}
     </a>
   ) : (
-    <Link className="d2-work" to={work.to}>
+    <Link className="work" to={work.to}>
       {inner}
     </Link>
   )
@@ -243,41 +243,41 @@ function App() {
     (activeCat ? STACK.find(g => g.key === activeCat).label : `${STACK_FLAT.length} items`)
 
   return (
-    <div className="d2">
+    <div className="board">
       {/* 左端の銘板。ページ全体の縁を締める */}
-      <aside className="d2-rail" aria-hidden="true">
+      <aside className="rail" aria-hidden="true">
         <VLine />
-        <span className="d2-rail-clock">{clock}</span>
-        <span className="d2-rail-text">PORTFOLIO — KOS.N — 2026</span>
+        <span className="rail-clock">{clock}</span>
+        <span className="rail-text">PORTFOLIO — KOS.N — 2026</span>
       </aside>
 
-      <main className="d2-main">
-        <div className="d2-row d2-row--a">
+      <main className="board-main">
+        <div className="row row--a">
           <HLine />
 
           {/* ── IDENTITY ── */}
-          <Module tag="Identity" meta="he / him" className="d2-id" order={0}>
-            <div className="d2-id-inner">
-              <div className="d2-id-body">
-                <h1 className="d2-id-name">Kos.N</h1>
-                <p className="d2-id-domain">
+          <Module tag="Identity" meta="he / him" className="id" order={0}>
+            <div className="id-inner">
+              <div className="id-body">
+                <h1 className="id-name">Kos.N</h1>
+                <p className="id-domain">
                   nkos
-                  <Link className="d2-id-dot" to="/troll">
+                  <Link className="id-dot" to="/troll">
                     .
                   </Link>
                   dev
                 </p>
               </div>
-              <figure className="d2-id-plate">
+              <figure className="id-plate">
                 <img src="/images/avatar.png" alt="" />
               </figure>
             </div>
 
             {/* 面の下端に敷く注記帯。アイコンは枠に収めて盤面の言語に合わせる */}
-            <ul className="d2-id-facts">
+            <ul className="id-facts">
               {ID_FACTS.map(({ Icon, text }) => (
                 <li key={text}>
-                  <span className="d2-fact-mark">
+                  <span className="fact-mark">
                     <Icon size={12} strokeWidth={1.8} />
                   </span>
                   <span>{text}</span>
@@ -290,10 +290,10 @@ function App() {
           <Module
             tag="Gallery"
             meta={`${shot + 1} / ${PHOTOS.length}`}
-            className="d2-gallery"
+            className="gallery"
             order={1}
           >
-            <figure className="d2-shots">
+            <figure className="shots">
               {PHOTOS.map((p, i) => (
                 <img
                   key={`${p.src}-${i}`}
@@ -303,19 +303,19 @@ function App() {
                   data-on={i === shot || undefined}
                 />
               ))}
-              <figcaption className="d2-shot-cap">
+              <figcaption className="shot-cap">
                 <MapPin size={13} strokeWidth={1.8} />
                 <span>{PHOTOS[shot].place}</span>
-                {PHOTOS[shot].note && <span className="d2-shot-note">{PHOTOS[shot].note}</span>}
+                {PHOTOS[shot].note && <span className="shot-note">{PHOTOS[shot].note}</span>}
               </figcaption>
             </figure>
 
-            <div className="d2-shot-ticks">
+            <div className="shot-ticks">
               {PHOTOS.map((p, i) => (
                 <button
                   key={`tick-${i}`}
                   type="button"
-                  className="d2-tick"
+                  className="tick"
                   data-on={i === shot || undefined}
                   aria-label={`${i + 1} 枚目 — ${p.place}`}
                   onClick={() => setShot(i)}
@@ -325,17 +325,17 @@ function App() {
           </Module>
         </div>
 
-        <div className="d2-row d2-row--b">
+        <div className="row row--b">
           <HLine />
 
           {/* ── STACK ── */}
-          <Module tag="Stack" meta={`${STACK.length} groups`} className="d2-stack" order={2}>
-            <div className="d2-cats">
+          <Module tag="Stack" meta={`${STACK.length} groups`} className="stack" order={2}>
+            <div className="cats">
               {STACK.map(g => (
                 <button
                   key={g.key}
                   type="button"
-                  className="d2-cat"
+                  className="cat"
                   data-on={activeCat === g.key || undefined}
                   aria-pressed={pinCat === g.key}
                   onMouseEnter={() => setHoverCat(g.key)}
@@ -345,17 +345,17 @@ function App() {
                   onClick={() => setPinCat(p => (p === g.key ? null : g.key))}
                 >
                   {g.label}
-                  <span className="d2-cat-n">{g.items.length}</span>
+                  <span className="cat-n">{g.items.length}</span>
                 </button>
               ))}
             </div>
 
             {/* 面のなかを漂う。ホバーで全体が止まるので、動いていても選べる */}
-            <ul className="d2-float">
+            <ul className="icon-field">
               {floats.map(item => (
                 <li
                   key={item.name}
-                  className="d2-icon"
+                  className="icon"
                   style={{
                     '--brand': brandColor(item),
                     '--x': `${item.x.toFixed(2)}%`,
@@ -371,26 +371,26 @@ function App() {
                   onMouseLeave={() => setHoverItem(null)}
                 >
                   <StackIcon item={item} />
-                  <span className="d2-sr">{item.name}</span>
+                  <span className="sr-only">{item.name}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="d2-readout">{readout}</p>
+            <p className="readout">{readout}</p>
           </Module>
 
           {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${WORKS.length} items`} className="d2-works" order={3}>
-            <ul className="d2-work-list">
+          <Module tag="Works" meta={`${WORKS.length} items`} className="works" order={3}>
+            <ul className="work-list">
               {WORKS.map(w => (
                 <li key={w.name}>
                   <WorkItem work={w} />
                 </li>
               ))}
             </ul>
-            <Link className="d2-more" to="/works">
+            <Link className="more" to="/works">
               ほかの制作物
-              <span className="d2-more-note">準備中</span>
+              <span className="more-note">準備中</span>
             </Link>
           </Module>
 
@@ -398,43 +398,43 @@ function App() {
           <Module
             tag="Log"
             meta={`${posts.length} ${posts.length === 1 ? 'entry' : 'entries'}`}
-            className="d2-log"
+            className="log"
             order={4}
           >
             {latest.length > 0 ? (
-              <ul className="d2-entries">
+              <ul className="entries">
                 {latest.map(p => (
                   <li key={p.slug}>
-                    <Link className="d2-entry" to={`/blog/${p.slug}`}>
-                      <span className="d2-entry-date">{fmtDate(p.date)}</span>
-                      <span className="d2-entry-title">{p.title}</span>
-                      {p.excerpt && <span className="d2-entry-text">{p.excerpt}</span>}
+                    <Link className="entry" to={`/blog/${p.slug}`}>
+                      <span className="entry-date">{fmtDate(p.date)}</span>
+                      <span className="entry-title">{p.title}</span>
+                      {p.excerpt && <span className="entry-text">{p.excerpt}</span>}
                     </Link>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="d2-empty">まだ記事はありません</p>
+              <p className="empty">まだ記事はありません</p>
             )}
           </Module>
         </div>
 
         {/* ── INDEX ── */}
-        <nav className="d2-index" style={{ '--i': 5 }}>
+        <nav className="index-nav" style={{ '--i': 5 }}>
           {INDEX_LINKS.map(l => {
             const Arrow = l.Icon ?? ArrowUpRight
             const inner = (
               <>
                 <VLine />
-                <span className="d2-index-label">{l.label}</span>
-                {l.note && <span className="d2-index-note">{l.note}</span>}
-                <Arrow className="d2-index-arrow" size={16} />
+                <span className="index-label">{l.label}</span>
+                {l.note && <span className="index-note">{l.note}</span>}
+                <Arrow className="index-arrow" size={16} />
               </>
             )
             return l.href ? (
               <a
                 key={l.label}
-                className="d2-index-item"
+                className="index-item"
                 href={l.href}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -442,7 +442,7 @@ function App() {
                 {inner}
               </a>
             ) : (
-              <Link key={l.label} className="d2-index-item" to={l.to}>
+              <Link key={l.label} className="index-item" to={l.to}>
                 {inner}
               </Link>
             )
