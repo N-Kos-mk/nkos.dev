@@ -1,4 +1,4 @@
-.troll-wrapper {
+.old-troll-wrapper {
   background: #fff;
   width: 100vw;
   height: 100vh;
@@ -11,7 +11,7 @@
   100% { background-position: 200% 50%; }
 }
 
-.rainbow-btn {
+.old-rainbow-btn {
   position: fixed;
   background: linear-gradient(90deg,
     #ff0000, #ff7700, #ffff00, #00dd00,
@@ -34,7 +34,7 @@
 
 /* ---- result (なんもないよ) ---- */
 
-.troll-result {
+.old-troll-result {
   background: #fff;
   width: 100vw;
   height: 100vh;
@@ -51,7 +51,7 @@
   50%       { transform: rotate(8deg); }
 }
 
-.result-emoji {
+.old-result-emoji {
   font-size: 4rem;
   line-height: 1;
   margin: 0 0 4px;
@@ -59,7 +59,7 @@
   display: block;
 }
 
-.result-title {
+.old-result-title {
   font-size: 2.8rem;
   font-weight: 800;
   color: #111;
@@ -67,7 +67,7 @@
   letter-spacing: -0.02em;
 }
 
-.result-sub {
+.old-result-sub {
   font-size: 1rem;
   color: #555;
   text-align: center;
@@ -75,7 +75,7 @@
   margin: 4px 0 0;
 }
 
-.result-home {
+.old-result-home {
   margin-top: 28px;
   font-size: 0.9rem;
   color: #888;
@@ -84,6 +84,6 @@
   transition: color 0.15s;
 }
 
-.result-home:hover {
+.old-result-home:hover {
   color: #333;
 }
