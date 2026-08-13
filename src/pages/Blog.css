@@ -1,11 +1,11 @@
-.blog-page {
+.old-blog-page {
   min-height: 100svh;
-  background: var(--bg);
+  background: var(--old-bg);
   position: relative;
   overflow: hidden;
 }
 
-.blog-inner {
+.old-blog-inner {
   position: relative;
   z-index: 1;
   max-width: 720px;
@@ -17,7 +17,7 @@
 }
 
 /* ── Sticky mini bar ── */
-.blog-sticky {
+.old-blog-sticky {
   position: fixed;
   top: 0;
   left: 0;
@@ -30,23 +30,23 @@
   background: rgba(8, 8, 16, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--old-card-border);
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.blog-sticky--visible {
+.old-blog-sticky--visible {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.blog-sticky-title {
+.old-blog-sticky-title {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--old-text-h);
   opacity: 0.7;
   white-space: nowrap;
   overflow: hidden;
@@ -56,12 +56,12 @@
 }
 
 /* ── Back link（枠なし） ── */
-.blog-back {
+.old-blog-back {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: var(--accent);
+  color: var(--old-accent);
   opacity: 0.55;
   text-decoration: none;
   width: fit-content;
@@ -71,54 +71,54 @@
 }
 
 /* ── Blog header ── */
-.blog-header {
+.old-blog-header {
   display: flex;
   flex-direction: column;
   gap: 16px;
   animation: fadeUp 0.7s ease both;
 }
 
-.blog-header-top {
+.old-blog-header-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.blog-title {
+.old-blog-title {
   font-size: clamp(32px, 8vw, 56px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--text-h);
+  color: var(--old-text-h);
   margin: 0;
 }
 
-.blog-sub {
+.old-blog-sub {
   font-size: 0.9rem;
-  color: var(--text);
+  color: var(--old-text);
   opacity: 0.4;
   margin: 0;
 }
 
 /* ── Post grid ── */
-.blog-grid {
+.old-blog-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
 @media (max-width: 680px) {
-  .blog-grid { grid-template-columns: repeat(2, 1fr); }
+  .old-blog-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 420px) {
-  .blog-grid { grid-template-columns: 1fr; }
+  .old-blog-grid { grid-template-columns: 1fr; }
 }
 
-.blog-card {
+.old-blog-card {
   display: flex;
   flex-direction: column;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
+  background: var(--old-card-bg);
+  border: 1px solid var(--old-card-border);
   border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
@@ -127,32 +127,32 @@
   transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
 
   &:hover {
-    border-color: var(--card-border-hover);
-    box-shadow: 0 0 24px var(--accent-glow);
+    border-color: var(--old-card-border-hover);
+    box-shadow: 0 0 24px var(--old-accent-glow);
     transform: translateY(-3px);
   }
 
-  &:hover .blog-card-title { color: var(--accent); }
+  &:hover .old-blog-card-title { color: var(--old-accent); }
 }
 
 /* サムネイルあり・なし共通の比率 */
-.blog-card-thumb,
-.blog-card-thumb-empty {
+.old-blog-card-thumb,
+.old-blog-card-thumb-empty {
   width: 100%;
   aspect-ratio: 16 / 9;
   display: block;
 }
 
-.blog-card-thumb {
+.old-blog-card-thumb {
   object-fit: cover;
 }
 
-.blog-card-thumb-empty {
+.old-blog-card-thumb-empty {
   background: linear-gradient(135deg, rgba(109,40,217,0.18), rgba(14,165,233,0.12));
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--old-card-border);
 }
 
-.blog-card-body {
+.old-blog-card-body {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -160,17 +160,17 @@
   flex: 1;
 }
 
-.blog-card-date {
+.old-blog-card-date {
   font-size: 0.72rem;
-  color: var(--text);
+  color: var(--old-text);
   opacity: 0.35;
   font-variant-numeric: tabular-nums;
 }
 
-.blog-card-title {
+.old-blog-card-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--old-text-h);
   letter-spacing: -0.02em;
   margin: 0;
   line-height: 1.4;
@@ -179,39 +179,39 @@
 
 
 /* ── Post ── */
-.post {
+.old-post {
   display: flex;
   flex-direction: column;
   gap: 32px;
   animation: fadeUp 0.7s ease both;
 }
 
-.post-header {
+.old-post-header {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding-bottom: 24px;
-  border-bottom: 1px solid var(--card-border);
+  border-bottom: 1px solid var(--old-card-border);
 }
 
-.post-date {
+.old-post-date {
   font-size: 0.78rem;
-  color: var(--text);
+  color: var(--old-text);
   opacity: 0.35;
 }
 
-.post-title {
+.old-post-title {
   font-size: clamp(24px, 5vw, 40px);
   font-weight: 700;
   letter-spacing: -0.03em;
-  color: var(--text-h);
+  color: var(--old-text-h);
   margin: 0;
 }
 
 /* excerpt：タイトル直下のリード文 */
-.post-excerpt {
+.old-post-excerpt {
   font-size: 1rem;
-  color: var(--text);
+  color: var(--old-text);
   opacity: 0.6;
   line-height: 1.75;
   margin: 0;
@@ -220,16 +220,16 @@
 }
 
 /* 記事末尾の一覧リンク */
-.post-footer-back {
+.old-post-footer-back {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   font-size: 13px;
-  color: var(--accent);
+  color: var(--old-accent);
   opacity: 0.55;
   text-decoration: none;
   padding-top: 16px;
-  border-top: 1px solid var(--card-border);
+  border-top: 1px solid var(--old-card-border);
   width: 100%;
   transition: opacity 0.2s;
 
@@ -237,20 +237,20 @@
 }
 
 /* ── Prose ── */
-.prose {
+.old-prose {
   display: flex;
   flex-direction: column;
   gap: 0;
   line-height: 1.85;
-  color: var(--text);
+  color: var(--old-text);
   font-size: 1rem;
 }
 
-.prose p   { margin: 0 0 1.2em; }
-.prose h2  { font-size: 1.15rem; font-weight: 700; color: var(--text-h); letter-spacing: -0.02em; margin: 2em 0 0.6em; }
-.prose h3  { font-size: 1rem; font-weight: 700; color: var(--text-h); margin: 1.6em 0 0.5em; }
+.old-prose p   { margin: 0 0 1.2em; }
+.old-prose h2  { font-size: 1.15rem; font-weight: 700; color: var(--old-text-h); letter-spacing: -0.02em; margin: 2em 0 0.6em; }
+.old-prose h3  { font-size: 1rem; font-weight: 700; color: var(--old-text-h); margin: 1.6em 0 0.5em; }
 
-.prose ul, .prose ol {
+.old-prose ul, .old-prose ol {
   padding-left: 1.4em;
   margin: 0 0 1.2em;
   display: flex;
@@ -258,64 +258,64 @@
   gap: 4px;
 }
 
-.prose strong { color: var(--text-h); font-weight: 600; }
+.old-prose strong { color: var(--old-text-h); font-weight: 600; }
 
-.prose code {
+.old-prose code {
   font-family: 'SF Mono', 'Fira Code', monospace;
   font-size: 0.88em;
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--old-card-border);
   border-radius: 4px;
   padding: 1px 6px;
-  color: var(--accent);
+  color: var(--old-accent);
 }
 
-.prose pre {
+.old-prose pre {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--card-border);
+  border: 1px solid var(--old-card-border);
   border-radius: 10px;
   padding: 20px;
   overflow-x: auto;
   margin: 0 0 1.2em;
 }
 
-.prose pre code {
+.old-prose pre code {
   background: none;
   border: none;
   padding: 0;
   font-size: 0.9em;
-  color: var(--text-h);
+  color: var(--old-text-h);
 }
 
-.prose blockquote {
-  border-left: 3px solid var(--accent);
+.old-prose blockquote {
+  border-left: 3px solid var(--old-accent);
   padding-left: 16px;
   margin: 0 0 1.2em;
   opacity: 0.7;
 }
 
-.prose hr {
+.old-prose hr {
   border: none;
-  border-top: 1px solid var(--card-border);
+  border-top: 1px solid var(--old-card-border);
   margin: 2em 0;
 }
 
-.prose a {
-  color: var(--accent);
+.old-prose a {
+  color: var(--old-accent);
   text-decoration: underline;
   text-underline-offset: 3px;
 
   &:hover { opacity: 0.7; }
 }
 
-.prose img, .post-cover {
+.old-prose img, .post-cover {
   width: 100%;
   border-radius: 10px;
   margin-bottom: 1.2em;
 }
 
-.blog-not-found {
-  color: var(--text);
+.old-blog-not-found {
+  color: var(--old-text);
   opacity: 0.5;
 }
 
