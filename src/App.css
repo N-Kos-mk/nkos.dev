@@ -677,9 +677,31 @@
   display: none;
 }
 
+/* 4 つを左から順に立ち上げるための順番 */
+.d2-index-item:nth-child(1) {
+  --k: 0;
+}
+
+.d2-index-item:nth-child(2) {
+  --k: 1;
+}
+
+.d2-index-item:nth-child(3) {
+  --k: 2;
+}
+
+.d2-index-item:nth-child(4) {
+  --k: 3;
+}
+
 .d2-index-item > *:not(.d2-vline) {
   animation: d2-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-  animation-delay: calc(940ms + var(--i, 0) * 30ms);
+  animation-delay: calc(1000ms + var(--k, 0) * 75ms);
+}
+
+/* 英字だけは左から滑り込ませる。日本語と矢印は従来どおり立ち上げる */
+.d2-index-item > .d2-index-label {
+  animation-name: d2-in-left;
 }
 
 .d2-index-item:hover {
@@ -730,6 +752,13 @@
   from {
     opacity: 0;
     transform: translateY(10px);
+  }
+}
+
+@keyframes d2-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
   }
 }
 

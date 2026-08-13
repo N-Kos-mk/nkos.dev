@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Code2, AppWindow, MapPin, GraduationCap } from 'lucide-react'
+import { ArrowUpRight, ExternalLink, Code2, AppWindow, MapPin, GraduationCap } from 'lucide-react'
 import {
   siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
   siReact, siVite, siNodedotjs, siFastapi,
@@ -94,10 +94,11 @@ const STACK = [
 const STACK_FLAT = STACK.flatMap(g => g.items.map(item => ({ ...item, key: g.key })))
 
 const INDEX_LINKS = [
-  { label: 'About', note: '経歴と人となり', to: '/about' },
-  { label: 'Blog', note: '書いたもの', to: '/blog' },
-  { label: 'Works', note: '準備中', to: '/works' },
-  { label: 'GitHub', note: 'ソースコード', href: GITHUB },
+  { label: 'About', note: '私について', to: '/about' },
+  { label: 'Blog', note: '書き残し', to: '/blog' },
+  { label: 'Works', note: 'プロジェクト等', to: '/works' },
+  /* 外部へ出るリンクなので、行き先を示すアイコンを変えている */
+  { label: 'GitHub', href: GITHUB, Icon: ExternalLink },
 ]
 
 /* 決定的なゆらぎ。index から生成するので、再描画しても値は変わらない。
@@ -420,8 +421,17 @@ function App() {
 
         {/* ── INDEX ── */}
         <nav className="d2-index" style={{ '--i': 5 }}>
-          {INDEX_LINKS.map(l =>
-            l.href ? (
+          {INDEX_LINKS.map(l => {
+            const Arrow = l.Icon ?? ArrowUpRight
+            const inner = (
+              <>
+                <VLine />
+                <span className="d2-index-label">{l.label}</span>
+                {l.note && <span className="d2-index-note">{l.note}</span>}
+                <Arrow className="d2-index-arrow" size={16} />
+              </>
+            )
+            return l.href ? (
               <a
                 key={l.label}
                 className="d2-index-item"
@@ -429,20 +439,14 @@ function App() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <VLine />
-                <span className="d2-index-label">{l.label}</span>
-                <span className="d2-index-note">{l.note}</span>
-                <ArrowUpRight className="d2-index-arrow" size={16} />
+                {inner}
               </a>
             ) : (
               <Link key={l.label} className="d2-index-item" to={l.to}>
-                <VLine />
-                <span className="d2-index-label">{l.label}</span>
-                <span className="d2-index-note">{l.note}</span>
-                <ArrowUpRight className="d2-index-arrow" size={16} />
+                {inner}
               </Link>
-            ),
-          )}
+            )
+          })}
         </nav>
       </main>
     </div>
