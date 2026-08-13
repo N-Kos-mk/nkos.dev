@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Code2, AppWindow } from 'lucide-react'
+import { ArrowUpRight, Code2, AppWindow, MapPin, GraduationCap } from 'lucide-react'
 import {
   siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
   siReact, siVite, siNodedotjs, siFastapi,
@@ -18,7 +18,18 @@ const REPO = 'https://github.com/n-kos-mk/nkos.dev'
 /* ブランドカラーが黒に近く、暗い背景で沈むアイコンは白で描く */
 const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
 
-const COLS = 7
+const ID_FACTS = [
+  { Icon: MapPin, text: '東京都' },
+  { Icon: GraduationCap, text: 'The University of Electro-Communications' },
+]
+
+/* 差し替え用のダミー。同じ画像を object-position だけ変えて並べている。
+   実写真が入ったら src / place / note を入れ替えるだけでよい */
+const PHOTOS = [
+  { src: '/images/avatar.png', place: '東京都', note: 'dummy', pos: 'center 28%' },
+  { src: '/images/avatar.png', place: '静岡県', note: 'dummy', pos: 'center 55%' },
+  { src: '/images/avatar.png', place: '京都府', note: 'dummy', pos: 'center 82%' },
+]
 
 const WORKS = [
   {
@@ -82,19 +93,18 @@ const STACK = [
 ]
 const STACK_FLAT = STACK.flatMap(g => g.items.map(item => ({ ...item, key: g.key })))
 
-/* 奥付。自己紹介ではなく、この盤面そのものの仕様を書く */
-const COLOPHON = [
-  ['Type', 'Archivo / Zen Kaku Gothic New'],
-  ['Stack', 'React · Vite'],
-  ['Host', 'Cloudflare Pages'],
-]
-
 const INDEX_LINKS = [
   { label: 'About', note: '経歴と人となり', to: '/about' },
   { label: 'Blog', note: '書いたもの', to: '/blog' },
   { label: 'Works', note: '準備中', to: '/works' },
   { label: 'GitHub', note: 'ソースコード', href: GITHUB },
 ]
+
+/* 整列を崩すためのゆらぎ。index から決定的に生成するので、再描画で動かない */
+const jitter = (seed, range) => {
+  const x = Math.sin((seed + 1) * 127.1) * 43758.5453
+  return (x - Math.floor(x) - 0.5) * range
+}
 
 const tokyoTime = () =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -165,6 +175,7 @@ function WorkItem({ work }) {
 
 function App() {
   const [clock, setClock] = useState(tokyoTime)
+  const [shot, setShot] = useState(0)
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
   const [hoverItem, setHoverItem] = useState(null)
@@ -172,6 +183,11 @@ function App() {
 
   useEffect(() => {
     const id = setInterval(() => setClock(tokyoTime()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  useEffect(() => {
+    const id = setInterval(() => setShot(i => (i + 1) % PHOTOS.length), 4600)
     return () => clearInterval(id)
   }, [])
 
@@ -187,6 +203,7 @@ function App() {
       {/* 左端の銘板。ページ全体の縁を締める */}
       <aside className="d2-rail" aria-hidden="true">
         <VLine />
+        <span className="d2-rail-clock">{clock}</span>
         <span className="d2-rail-text">PORTFOLIO — KOS.N — 2026</span>
       </aside>
 
@@ -206,7 +223,14 @@ function App() {
                   </Link>
                   dev
                 </p>
-                <p className="d2-id-role">つくったものと、考えたことの置き場</p>
+                <ul className="d2-id-facts">
+                  {ID_FACTS.map(({ Icon, text }) => (
+                    <li key={text}>
+                      <Icon size={13} strokeWidth={1.7} />
+                      <span>{text}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <figure className="d2-id-plate">
                 <img src="/images/avatar.png" alt="" />
@@ -214,8 +238,50 @@ function App() {
             </div>
           </Module>
 
+          {/* ── GALLERY ── */}
+          <Module
+            tag="Gallery"
+            meta={`${shot + 1} / ${PHOTOS.length}`}
+            className="d2-gallery"
+            order={1}
+          >
+            <figure className="d2-shots">
+              {PHOTOS.map((p, i) => (
+                <img
+                  key={`${p.src}-${i}`}
+                  src={p.src}
+                  alt=""
+                  style={{ objectPosition: p.pos }}
+                  data-on={i === shot || undefined}
+                />
+              ))}
+              <figcaption className="d2-shot-cap">
+                <MapPin size={13} strokeWidth={1.8} />
+                <span>{PHOTOS[shot].place}</span>
+                {PHOTOS[shot].note && <span className="d2-shot-note">{PHOTOS[shot].note}</span>}
+              </figcaption>
+            </figure>
+
+            <div className="d2-shot-ticks">
+              {PHOTOS.map((p, i) => (
+                <button
+                  key={`tick-${i}`}
+                  type="button"
+                  className="d2-tick"
+                  data-on={i === shot || undefined}
+                  aria-label={`${i + 1} 枚目 — ${p.place}`}
+                  onClick={() => setShot(i)}
+                />
+              ))}
+            </div>
+          </Module>
+        </div>
+
+        <div className="d2-row d2-row--b">
+          <HLine />
+
           {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${WORKS.length} items`} className="d2-works" order={1}>
+          <Module tag="Works" meta={`${WORKS.length} items`} className="d2-works" order={2}>
             <ul className="d2-work-list">
               {WORKS.map(w => (
                 <li key={w.name}>
@@ -228,13 +294,9 @@ function App() {
               <span className="d2-more-note">準備中</span>
             </Link>
           </Module>
-        </div>
-
-        <div className="d2-row d2-row--b">
-          <HLine />
 
           {/* ── STACK ── */}
-          <Module tag="Stack" meta={`${STACK.length} groups`} className="d2-stack" order={2}>
+          <Module tag="Stack" meta={`${STACK.length} groups`} className="d2-stack" order={3}>
             <div className="d2-cats">
               {STACK.map(g => (
                 <button
@@ -262,8 +324,11 @@ function App() {
                   className="d2-cell"
                   style={{
                     '--brand': brandColor(item),
-                    '--col': n % COLS,
-                    '--row': Math.floor(n / COLS),
+                    '--dx': `${jitter(n, 11).toFixed(2)}px`,
+                    '--dy': `${jitter(n + 41, 17).toFixed(2)}px`,
+                    '--rot': `${jitter(n + 97, 16).toFixed(2)}deg`,
+                    '--sz': `${(19 + jitter(n + 13, 6)).toFixed(2)}px`,
+                    '--n': n,
                   }}
                   data-state={activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined}
                   onMouseEnter={() => setHoverItem(item.name)}
@@ -283,7 +348,7 @@ function App() {
             tag="Log"
             meta={`${posts.length} ${posts.length === 1 ? 'entry' : 'entries'}`}
             className="d2-log"
-            order={3}
+            order={4}
           >
             {latest.length > 0 ? (
               <ul className="d2-entries">
@@ -300,22 +365,6 @@ function App() {
             ) : (
               <p className="d2-empty">まだ記事はありません</p>
             )}
-          </Module>
-
-          {/* ── COLOPHON ── */}
-          <Module tag="Colophon" meta="JST" className="d2-colophon" order={4}>
-            <dl className="d2-facts">
-              {COLOPHON.map(([k, v]) => (
-                <div className="d2-fact" key={k}>
-                  <dt>{k}</dt>
-                  <dd>{v}</dd>
-                </div>
-              ))}
-              <div className="d2-fact">
-                <dt>Time</dt>
-                <dd className="d2-clock">{clock}</dd>
-              </div>
-            </dl>
           </Module>
         </div>
 
