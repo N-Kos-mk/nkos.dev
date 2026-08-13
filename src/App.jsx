@@ -100,11 +100,10 @@ const INDEX_LINKS = [
   { label: 'GitHub', note: 'ソースコード', href: GITHUB },
 ]
 
-/* 整列を崩すためのゆらぎ。index から決定的に生成するので、再描画で動かない */
-const jitter = (seed, range) => {
-  const x = Math.sin((seed + 1) * 127.1) * 43758.5453
-  return (x - Math.floor(x) - 0.5) * range
-}
+/* 並べず、流し続ける。2 本の帯を逆向きに送るので静止した一覧にはならない。
+   各帯は同じ並びを 2 度描き、半分だけ送って原点に戻すことで継ぎ目なく循環する */
+const BELT_SPLIT = 11
+const BELTS = [STACK_FLAT.slice(0, BELT_SPLIT), STACK_FLAT.slice(BELT_SPLIT)]
 
 const tokyoTime = () =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -280,23 +279,8 @@ function App() {
         <div className="d2-row d2-row--b">
           <HLine />
 
-          {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${WORKS.length} items`} className="d2-works" order={2}>
-            <ul className="d2-work-list">
-              {WORKS.map(w => (
-                <li key={w.name}>
-                  <WorkItem work={w} />
-                </li>
-              ))}
-            </ul>
-            <Link className="d2-more" to="/works">
-              ほかの制作物
-              <span className="d2-more-note">準備中</span>
-            </Link>
-          </Module>
-
           {/* ── STACK ── */}
-          <Module tag="Stack" meta={`${STACK.length} groups`} className="d2-stack" order={3}>
+          <Module tag="Stack" meta={`${STACK.length} groups`} className="d2-stack" order={2}>
             <div className="d2-cats">
               {STACK.map(g => (
                 <button
@@ -317,30 +301,56 @@ function App() {
               ))}
             </div>
 
-            <ul className="d2-cells">
-              {STACK_FLAT.map((item, n) => (
-                <li
-                  key={item.name}
-                  className="d2-cell"
-                  style={{
-                    '--brand': brandColor(item),
-                    '--dx': `${jitter(n, 11).toFixed(2)}px`,
-                    '--dy': `${jitter(n + 41, 17).toFixed(2)}px`,
-                    '--rot': `${jitter(n + 97, 16).toFixed(2)}deg`,
-                    '--sz': `${(19 + jitter(n + 13, 6)).toFixed(2)}px`,
-                    '--n': n,
-                  }}
-                  data-state={activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined}
-                  onMouseEnter={() => setHoverItem(item.name)}
-                  onMouseLeave={() => setHoverItem(null)}
+            {/* 送り出し。ホバーで全体が止まるので、動いていても選べる */}
+            <div className="d2-belts">
+              {BELTS.map((belt, b) => (
+                <div
+                  className="d2-belt"
+                  key={`belt-${b}`}
+                  data-dir={b % 2 ? 'rev' : undefined}
+                  style={{ '--dur': `${32 + b * 9}s` }}
                 >
-                  <StackIcon item={item} />
-                  <span className="d2-sr">{item.name}</span>
+                  <ul className="d2-belt-track">
+                    {[...belt, ...belt].map((item, k) => {
+                      const dup = k >= belt.length
+                      return (
+                        <li
+                          key={`${item.name}-${k}`}
+                          className="d2-cell"
+                          style={{ '--brand': brandColor(item) }}
+                          data-state={
+                            activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined
+                          }
+                          aria-hidden={dup || undefined}
+                          onMouseEnter={() => setHoverItem(item.name)}
+                          onMouseLeave={() => setHoverItem(null)}
+                        >
+                          <StackIcon item={item} />
+                          {!dup && <span className="d2-sr">{item.name}</span>}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <p className="d2-readout">{readout}</p>
+          </Module>
+
+          {/* ── WORKS ── */}
+          <Module tag="Works" meta={`${WORKS.length} items`} className="d2-works" order={3}>
+            <ul className="d2-work-list">
+              {WORKS.map(w => (
+                <li key={w.name}>
+                  <WorkItem work={w} />
                 </li>
               ))}
             </ul>
-
-            <p className="d2-readout">{readout}</p>
+            <Link className="d2-more" to="/works">
+              ほかの制作物
+              <span className="d2-more-note">準備中</span>
+            </Link>
           </Module>
 
           {/* ── LOG ── */}
