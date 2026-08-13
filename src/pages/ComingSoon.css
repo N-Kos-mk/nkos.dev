@@ -1,4 +1,4 @@
-.cs-wrapper {
+.old-cs-wrapper {
   position: relative;
   min-height: 100svh;
   display: flex;
@@ -7,7 +7,7 @@
   overflow: hidden;
 }
 
-.cs-content {
+.old-cs-content {
   position: relative;
   z-index: 1;
   text-align: center;
@@ -15,30 +15,30 @@
   animation: fadeUp 0.7s ease both;
 }
 
-.cs-eyebrow {
+.old-cs-eyebrow {
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--old-accent);
   opacity: 0.8;
   margin-bottom: 12px;
 }
 
-.cs-title {
+.old-cs-title {
   font-size: clamp(40px, 10vw, 80px);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.1;
-  color: var(--text-h);
+  color: var(--old-text-h);
   margin-bottom: 16px;
 }
 
-.cs-sub {
-  color: var(--text);
+.old-cs-sub {
+  color: var(--old-text);
   margin-bottom: 24px;
 }
 
-.cs-sushi-wrap {
+.old-cs-sushi-wrap {
   margin-top: 20px;
   margin-bottom: 36px;
 }
@@ -48,7 +48,7 @@
   to   { transform: rotate(360deg); }
 }
 
-.cs-sushi {
+.old-cs-sushi {
   display: inline-block;
   font-size: 4rem;
   animation: spin-sushi 1.8s linear infinite;
@@ -57,31 +57,31 @@
   user-select: none;
 }
 
-.cs-sushi-caption {
+.old-cs-sushi-caption {
   margin-top: 12px;
   font-size: 0.85rem;
-  color: var(--text);
+  color: var(--old-text);
   opacity: 0.5;
 
   s {
-    text-decoration-color: var(--accent);
+    text-decoration-color: var(--old-accent);
   }
 }
 
-.cs-back {
+.old-cs-back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  color: var(--accent);
-  border: 1px solid var(--card-border);
+  color: var(--old-accent);
+  border: 1px solid var(--old-card-border);
   border-radius: 8px;
   padding: 10px 20px;
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
-    border-color: var(--card-border-hover);
-    box-shadow: 0 0 16px var(--accent-glow);
+    border-color: var(--old-card-border-hover);
+    box-shadow: 0 0 16px var(--old-accent-glow);
   }
 }
 

@@ -16,16 +16,16 @@ const FACTS = [
   { Icon: Home,          text: '東京都在住' },
 ]
 
-// GitHub のブランドカラーはダーク背景で視認しづらいため、代わりに --text-h で描画する
+// GitHub のブランドカラーはダーク背景で視認しづらいため、代わりに --old-text-h で描画する
 const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
 
 function SkillIcon({ item, size = 16 }) {
   if (item.Icon) {
     const { Icon } = item
-    return <Icon size={size} color="var(--text-h)" strokeWidth={1.8} style={{ flexShrink: 0 }} />
+    return <Icon size={size} color="var(--old-text-h)" strokeWidth={1.8} style={{ flexShrink: 0 }} />
   }
   const { icon } = item
-  const color = DARK_ICON_SLUGS.has(icon.slug) ? 'var(--text-h)' : `#${icon.hex}`
+  const color = DARK_ICON_SLUGS.has(icon.slug) ? 'var(--old-text-h)' : `#${icon.hex}`
   return (
     <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill={color} style={{ flexShrink: 0 }}>
       <path d={icon.path} />
@@ -84,55 +84,55 @@ const INTERESTS = [
 
 export default function About({ isOpen, onClose }) {
   return (
-    <div className={`about-panel${isOpen ? ' about-panel--open' : ''}`}>
+    <div className={`old-about-panel${isOpen ? ' old-about-panel--open' : ''}`}>
 
       {/* sticky topbar */}
-      <div className="about-topbar">
-        <button className="about-back" onClick={onClose}>
+      <div className="old-about-topbar">
+        <button className="old-about-back" onClick={onClose}>
           <ArrowLeft size={16} />
           Back to home
         </button>
       </div>
 
-      <article className="about-content">
+      <article className="old-about-content">
 
         {/* Hero */}
-        <section className="about-hero">
-          <img src="/images/avatar.png" alt="avatar" className="about-avatar" />
-          <h1 className="about-name">Kos.N</h1>
-          <p className="about-role">he / him</p>
-          <p className="about-tagline">Building things with code and curiosity.</p>
+        <section className="old-about-hero">
+          <img src="/images/avatar.png" alt="avatar" className="old-about-avatar" />
+          <h1 className="old-about-name">Kos.N</h1>
+          <p className="old-about-role">he / him</p>
+          <p className="old-about-tagline">Building things with code and curiosity.</p>
         </section>
 
         {/* Bio */}
-        <section className="about-section">
-          <h2 className="about-section-title">Bio</h2>
-          <p className="about-bio">
+        <section className="old-about-section">
+          <h2 className="old-about-section-title">Bio</h2>
+          <p className="old-about-bio">
             ゲームと個人開発が趣味です。デザインの定量評価に関する研究をしており、
             その前は数年間生物分野にてタンパク質をこねこねしていました。
             このサイトはモチベーションに応じて日々更新中。
           </p>
-          <ul className="about-facts">
+          <ul className="old-about-facts">
             {FACTS.map(({ Icon, text }) => (
               <li key={text}>
-                <Icon size={15} className="fact-icon" />
+                <Icon size={15} className="old-fact-icon" />
                 <span>{text}</span>
               </li>
             ))}
           </ul>
-          <div className="dummy-photo"><span>📷 Photo placeholder</span></div>
+          <div className="old-dummy-photo"><span>📷 Photo placeholder</span></div>
         </section>
 
         {/* Skills */}
-        <section className="about-section">
-          <h2 className="about-section-title">Skills</h2>
+        <section className="old-about-section">
+          <h2 className="old-about-section-title">Skills</h2>
 
           {SKILL_GROUPS.map(group => (
-            <div key={group.title} className="skill-block">
-              <h3 className="skill-block-title">{group.title}</h3>
-              <div className="skill-chips">
+            <div key={group.title} className="old-skill-block">
+              <h3 className="old-skill-block-title">{group.title}</h3>
+              <div className="old-skill-chips">
                 {group.items.map(item => (
-                  <span key={item.name} className="skill-chip">
+                  <span key={item.name} className="old-skill-chip">
                     <SkillIcon item={item} />
                     {item.name}
                   </span>
@@ -145,7 +145,7 @@ export default function About({ isOpen, onClose }) {
             href="https://github.com/N-Kos-mk"
             target="_blank"
             rel="noopener noreferrer"
-            className="skill-more-link"
+            className="old-skill-more-link"
           >
             詳細(GitHub)
             <ExternalLink size={14} />
@@ -153,31 +153,31 @@ export default function About({ isOpen, onClose }) {
         </section>
 
         {/* Interests */}
-        <section className="about-section">
-          <h2 className="about-section-title">趣味・興味</h2>
-          <div className="interests-grid">
+        <section className="old-about-section">
+          <h2 className="old-about-section-title">趣味・興味</h2>
+          <div className="old-interests-grid">
             {INTERESTS.map(item => (
-              <div key={item.label} className="interest-item">
+              <div key={item.label} className="old-interest-item">
                 <span>{item.icon}</span>
                 <span>{item.label}</span>
               </div>
             ))}
           </div>
-          <div className="dummy-photo"><span>📷 Photo placeholder</span></div>
+          <div className="old-dummy-photo"><span>📷 Photo placeholder</span></div>
         </section>
 
         {/* Works — 非表示（コンテンツ追加後に解除） */}
-        {/* <section className="about-section">
-          <h2 className="about-section-title">Works</h2>
+        {/* <section className="old-about-section">
+          <h2 className="old-about-section-title">Works</h2>
         </section> */}
 
         {/* Contact */}
-        <section className="about-section">
-          <h2 className="about-section-title">Contact</h2>
-          <ul className="contact-list">
+        <section className="old-about-section">
+          <h2 className="old-about-section-title">Contact</h2>
+          <ul className="old-contact-list">
             <li>
               <Mail size={16} />
-              <span className="contact-pending">（準備中...）</span>
+              <span className="old-contact-pending">（準備中...）</span>
             </li>
             {/*<li>
               <ExternalLink size={16} />

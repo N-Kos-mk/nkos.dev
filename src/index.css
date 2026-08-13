@@ -1,18 +1,35 @@
 :root {
-  --bg: #080810;
-  --text: #94a3b8;
-  --text-h: #f8fafc;
-  --accent: #a78bfa;
-  --accent-glow: rgba(167, 139, 250, 0.25);
-  --card-bg: rgba(255, 255, 255, 0.03);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --card-border-hover: rgba(167, 139, 250, 0.4);
+  /* ── 既存ページ（About / Blog / ComingSoon / Troll）が参照するトークン。値は変更しない ── */
+  --old-bg: #080810;
+  --old-text: #94a3b8;
+  --old-text-h: #f8fafc;
+  --old-accent: #a78bfa;
+  --old-accent-glow: rgba(167, 139, 250, 0.25);
+  --old-card-bg: rgba(255, 255, 255, 0.03);
+  --old-card-border: rgba(255, 255, 255, 0.08);
+  --old-card-border-hover: rgba(167, 139, 250, 0.4);
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --old-sans: system-ui, 'Segoe UI', Roboto, sans-serif;
 
-  font: 17px/160% var(--sans);
-  color: var(--text);
-  background: var(--bg);
+  /* ── トップページ用トークン ── */
+  --ink: #0a0a0c;
+  --panel: #0e0e12;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-soft: rgba(255, 255, 255, 0.05);
+
+  --paper: #f4f4f2;
+  --grey: #a0a0ab; /* --ink に対して約 7.4:1 */
+  --dim: #7e7e8c; /* --ink に対して約 4.9:1。これ以上暗くしない */
+
+  /* 唯一の有彩色。計測値・ラベル・強調にのみ使う */
+  --brass: #d2a857;
+
+  --display: 'Archivo', system-ui, sans-serif;
+  --jp: 'Zen Kaku Gothic New', system-ui, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+
+  font: 17px/160% var(--old-sans);
+  color: var(--old-text);
+  background: var(--old-bg);
   color-scheme: dark;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -29,7 +46,9 @@ body {
   min-height: 100svh;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   margin: 0;
 }
 
