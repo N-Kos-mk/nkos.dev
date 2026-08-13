@@ -524,12 +524,16 @@
 
 /* 中心合わせは translate、漂いは transform、拡大は scale と
    別プロパティに分けている。同じ transform に入れると互いを打ち消す */
+/* 触り判定は 40px の正方形で揃える。判定を svg 任せにすると
+   字形の違いがそのまま当たり判定の差になり、拾いやすさがばらつく */
 .d2-icon {
   position: absolute;
   left: var(--x, 50%);
   top: var(--y, 50%);
   display: grid;
   place-items: center;
+  width: 40px;
+  height: 40px;
   translate: -50% -50%;
   color: var(--d2-grey);
   transition: color 0.25s, scale 0.22s;
@@ -541,9 +545,11 @@
   animation-direction: alternate-reverse;
 }
 
+/* 判定を親の正方形に一本化するため、svg 自身は当たりを取らない */
 .d2-icon > svg {
   width: var(--sz, 19px);
   height: var(--sz, 19px);
+  pointer-events: none;
   transition: opacity 0.25s;
 }
 
@@ -734,19 +740,19 @@
   }
 }
 
-/* 漂い。振れ幅は小さく、速さと開始位置を個体ごとにずらす */
+/* 漂い。速さ・開始位置・進行方向に加えて、振れ幅も個体ごとに変える */
 @keyframes d2-float {
   0% {
     transform: translate(0, 0);
   }
   30% {
-    transform: translate(7px, -9px);
+    transform: translate(calc(8px * var(--amp, 1)), calc(-10px * var(--amp, 1)));
   }
   60% {
-    transform: translate(-5px, -15px);
+    transform: translate(calc(-6px * var(--amp, 1)), calc(-17px * var(--amp, 1)));
   }
   100% {
-    transform: translate(-9px, -4px);
+    transform: translate(calc(-11px * var(--amp, 1)), calc(-5px * var(--amp, 1)));
   }
 }
 

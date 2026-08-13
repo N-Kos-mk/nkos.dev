@@ -110,23 +110,43 @@ const jitter = (seed, range) => {
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v))
 
 /* 並べも送りもせず、面のなかに散らして漂わせる。
-   粗い格子を下敷きにして各点をずらすので、散らばりつつ重なりすぎない */
+   粗い格子を下敷きにして各点をずらすが、格子をそのまま使うと
+   ずらし幅が間隔より小さく、列が透けて整列して見える。
+   奇数行を半セル横にずらして列を噛み合わせ、ずらし幅も広く取る */
 const FLOAT_COLS = 4
 const FLOAT_ROWS = Math.ceil(STACK_FLAT.length / FLOAT_COLS)
+/* 半セルずらした分だけ横幅を広げ、右端がはみ出さないようにする */
+const FLOAT_SPAN = FLOAT_COLS + 0.5
 
-const FLOATS = STACK_FLAT.map((item, i) => {
+/* 配置そのものは固定の枠として持ち、どのアイコンがどの枠に入るかだけを
+   表示のたびに入れ替える。枠を作り直すと散らばり具合が毎回変わってしまう */
+const FLOAT_SLOTS = STACK_FLAT.map((_, i) => {
   const col = i % FLOAT_COLS
   const row = Math.floor(i / FLOAT_COLS)
+  const stagger = row % 2 ? 0.5 : 0
   return {
-    ...item,
-    x: clamp(((col + 0.5 + jitter(i, 0.62)) / FLOAT_COLS) * 100, 8, 92),
-    y: clamp(((row + 0.5 + jitter(i + 31, 0.56)) / FLOAT_ROWS) * 100, 6, 94),
+    x: clamp(((col + 0.5 + stagger + jitter(i, 0.72)) / FLOAT_SPAN) * 100, 9, 91),
+    y: clamp(((row + 0.5 + jitter(i + 31, 0.68)) / FLOAT_ROWS) * 100, 7, 93),
     size: 17 + Math.abs(jitter(i + 7, 8)),
     dur: 7 + Math.abs(jitter(i + 13, 7)),
     delay: -Math.abs(jitter(i + 19, 12)),
+    /* 漂う振れ幅も個体差をつける。同じ軌跡だと群れとして揃って見える */
+    amp: 0.6 + Math.abs(jitter(i + 53, 1.3)),
     rev: i % 2 === 0,
   }
 })
+
+/* 表示のたびに並び順を入れ替える。マウント時に一度だけ実行し、
+   以降の再描画では固定する。描画のたびに引き直すと、ホバーなどで
+   状態が変わるたびにアイコンが枠を飛び移ってしまう */
+const shuffleFloats = () => {
+  const items = [...STACK_FLAT]
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[items[i], items[j]] = [items[j], items[i]]
+  }
+  return items.map((item, i) => ({ ...item, ...FLOAT_SLOTS[i] }))
+}
 
 const tokyoTime = () =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -201,6 +221,7 @@ function App() {
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
   const [hoverItem, setHoverItem] = useState(null)
+  const [floats] = useState(shuffleFloats)
   const activeCat = hoverCat ?? pinCat
 
   useEffect(() => {
@@ -330,7 +351,7 @@ function App() {
 
             {/* 面のなかを漂う。ホバーで全体が止まるので、動いていても選べる */}
             <ul className="d2-float">
-              {FLOATS.map(item => (
+              {floats.map(item => (
                 <li
                   key={item.name}
                   className="d2-icon"
@@ -341,6 +362,7 @@ function App() {
                     '--sz': `${item.size.toFixed(1)}px`,
                     '--dur': `${item.dur.toFixed(2)}s`,
                     '--delay': `${item.delay.toFixed(2)}s`,
+                    '--amp': item.amp.toFixed(2),
                   }}
                   data-rev={item.rev || undefined}
                   data-state={activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined}
