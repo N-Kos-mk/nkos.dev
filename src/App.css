@@ -93,13 +93,29 @@
 }
 
 /* ── 面の構成 ── */
-/* 上段は中身の高さぴったりに収める。余った高さを比率で配ると
-   Identity の見出しと名前のあいだに用途のない空白が生まれるため、
-   余白はすべて下段（一覧が入る行）に吸わせる */
 .d2-main {
   display: grid;
   grid-template-rows: min-content minmax(min-content, 1fr) min-content;
   min-width: 0;
+}
+
+/* 大きい画面では一画面に収め、スクロールを出さない。
+   行に比率を与え、余った高さは Gallery と Stack の面が伸びて吸う。
+   面の下端に着く要素（注記帯・読み取り欄・リンク）を各モジュールに
+   ひとつ持たせてあるので、伸びても宙に浮いた空白にはならない */
+@media (min-width: 1001px) and (min-height: 760px) {
+  .d2 {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .d2-main {
+    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1fr) min-content;
+  }
+
+  .d2-id-facts {
+    margin-top: auto;
+  }
 }
 
 .d2-row {
@@ -248,26 +264,40 @@
   color: var(--d2-white);
 }
 
+/* 面の下端に敷く注記帯。上に罫線を通し、盤面の一部として据える */
 .d2-id-facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 20px;
-  margin: 16px 0 0;
-  padding: 0;
+  gap: 12px 28px;
+  margin: 22px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--d2-line-soft);
   list-style: none;
 }
 
 .d2-id-facts li {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 11px;
   font-size: 12.5px;
   color: var(--d2-grey);
 }
 
-.d2-id-facts svg {
+/* アイコンは直に置かず枠に収める。1px の線でできた盤面の言語に揃える */
+.d2-fact-mark {
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
+  width: 24px;
+  height: 24px;
   color: var(--d2-brass);
+  border: 1px solid var(--d2-line);
+  transition: border-color 0.25s, background 0.25s;
+}
+
+.d2-id-facts li:hover .d2-fact-mark {
+  border-color: rgba(210, 168, 87, 0.5);
+  background: rgba(210, 168, 87, 0.08);
 }
 
 /* 写真は暗く沈めず、額装した印画として置く */
@@ -297,7 +327,7 @@
 .d2-shots {
   position: relative;
   flex: 1;
-  min-height: 150px;
+  min-height: 190px;
   margin: 0;
   overflow: hidden;
   border: 1px solid var(--d2-line);
@@ -481,77 +511,68 @@
   opacity: 0.75;
 }
 
-/* 一覧として並べるのではなく、2 本の帯で送り続ける。
-   同じ並びを 2 度描き、ちょうど半分だけ送って原点に戻すので継ぎ目が出ない。
-   間隔は gap ではなく margin で取る。gap だと連結部だけ半分ずれて跳ねる */
-.d2-belts {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin: 4px 0 0;
-  /* 左右の端で溶けるように消し、帯の始点と終点を見せない */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent);
-}
-
-.d2-belt {
-  overflow: hidden;
-}
-
-.d2-belt-track {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  margin: 0;
-  padding: 9px 0;
+/* 並べも送りもせず、面のなかに散らして漂わせる。
+   位置は粗い格子を下敷きにずらしてあり、面の高さいっぱいに広がる */
+.d2-float {
+  position: relative;
+  flex: 1;
+  min-height: 170px;
+  margin: 10px 0 0;
+  padding: 0;
   list-style: none;
-  animation: d2-belt var(--dur, 32s) linear infinite;
 }
 
-.d2-belt[data-dir='rev'] .d2-belt-track {
-  animation-direction: reverse;
-}
-
-/* 指している間は帯全体を止める。動いていても選べるようにする */
-.d2-belts:hover .d2-belt-track {
-  animation-play-state: paused;
-}
-
-.d2-cell {
+/* 中心合わせは translate、漂いは transform、拡大は scale と
+   別プロパティに分けている。同じ transform に入れると互いを打ち消す */
+.d2-icon {
+  position: absolute;
+  left: var(--x, 50%);
+  top: var(--y, 50%);
   display: grid;
   place-items: center;
-  flex-shrink: 0;
-  margin-right: 28px;
+  translate: -50% -50%;
   color: var(--d2-grey);
   transition: color 0.25s, scale 0.22s;
+  animation: d2-float var(--dur, 8s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
 }
 
-.d2-cell > svg {
-  width: 21px;
-  height: 21px;
+.d2-icon[data-rev] {
+  animation-direction: alternate-reverse;
+}
+
+.d2-icon > svg {
+  width: var(--sz, 19px);
+  height: var(--sz, 19px);
   transition: opacity 0.25s;
 }
 
+/* 指している間は全体を止める。漂っていても選べるようにする */
+.d2-float:hover .d2-icon {
+  animation-play-state: paused;
+}
+
 /* 既定は単色。指したものだけ本来のブランド色になる */
-.d2-cell:hover {
+.d2-icon:hover {
+  z-index: 2;
   color: var(--brand);
-  scale: 1.35;
+  scale: 1.42;
 }
 
 /* ひとつを指している間、ほかは引く */
-.d2-belts:hover .d2-cell:not(:hover) > svg {
-  opacity: 0.34;
+.d2-float:hover .d2-icon:not(:hover) > svg {
+  opacity: 0.32;
 }
 
-.d2-cell[data-state='off'] > svg {
+.d2-icon[data-state='off'] > svg {
   opacity: 0.14;
 }
 
-.d2-belts:hover .d2-cell[data-state='off'] > svg {
+.d2-float:hover .d2-icon[data-state='off'] > svg {
   opacity: 0.1;
 }
 
-.d2-cell[data-state='on'] {
+.d2-icon[data-state='on'] {
   color: var(--d2-white);
 }
 
@@ -713,10 +734,19 @@
   }
 }
 
-/* 帯の送り。2 度描いた並びを半分送ると元の位置に重なる */
-@keyframes d2-belt {
-  to {
-    transform: translateX(-50%);
+/* 漂い。振れ幅は小さく、速さと開始位置を個体ごとにずらす */
+@keyframes d2-float {
+  0% {
+    transform: translate(0, 0);
+  }
+  30% {
+    transform: translate(7px, -9px);
+  }
+  60% {
+    transform: translate(-5px, -15px);
+  }
+  100% {
+    transform: translate(-9px, -4px);
   }
 }
 

@@ -100,10 +100,33 @@ const INDEX_LINKS = [
   { label: 'GitHub', note: 'ソースコード', href: GITHUB },
 ]
 
-/* 並べず、流し続ける。2 本の帯を逆向きに送るので静止した一覧にはならない。
-   各帯は同じ並びを 2 度描き、半分だけ送って原点に戻すことで継ぎ目なく循環する */
-const BELT_SPLIT = 11
-const BELTS = [STACK_FLAT.slice(0, BELT_SPLIT), STACK_FLAT.slice(BELT_SPLIT)]
+/* 決定的なゆらぎ。index から生成するので、再描画しても値は変わらない。
+   乱数だと状態が更新されるたびに配置が飛ぶ */
+const jitter = (seed, range) => {
+  const x = Math.sin((seed + 1) * 127.1) * 43758.5453
+  return (x - Math.floor(x) - 0.5) * range
+}
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v))
+
+/* 並べも送りもせず、面のなかに散らして漂わせる。
+   粗い格子を下敷きにして各点をずらすので、散らばりつつ重なりすぎない */
+const FLOAT_COLS = 4
+const FLOAT_ROWS = Math.ceil(STACK_FLAT.length / FLOAT_COLS)
+
+const FLOATS = STACK_FLAT.map((item, i) => {
+  const col = i % FLOAT_COLS
+  const row = Math.floor(i / FLOAT_COLS)
+  return {
+    ...item,
+    x: clamp(((col + 0.5 + jitter(i, 0.62)) / FLOAT_COLS) * 100, 8, 92),
+    y: clamp(((row + 0.5 + jitter(i + 31, 0.56)) / FLOAT_ROWS) * 100, 6, 94),
+    size: 17 + Math.abs(jitter(i + 7, 8)),
+    dur: 7 + Math.abs(jitter(i + 13, 7)),
+    delay: -Math.abs(jitter(i + 19, 12)),
+    rev: i % 2 === 0,
+  }
+})
 
 const tokyoTime = () =>
   new Intl.DateTimeFormat('ja-JP', {
@@ -222,19 +245,23 @@ function App() {
                   </Link>
                   dev
                 </p>
-                <ul className="d2-id-facts">
-                  {ID_FACTS.map(({ Icon, text }) => (
-                    <li key={text}>
-                      <Icon size={13} strokeWidth={1.7} />
-                      <span>{text}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
               <figure className="d2-id-plate">
                 <img src="/images/avatar.png" alt="" />
               </figure>
             </div>
+
+            {/* 面の下端に敷く注記帯。アイコンは枠に収めて盤面の言語に合わせる */}
+            <ul className="d2-id-facts">
+              {ID_FACTS.map(({ Icon, text }) => (
+                <li key={text}>
+                  <span className="d2-fact-mark">
+                    <Icon size={12} strokeWidth={1.8} />
+                  </span>
+                  <span>{text}</span>
+                </li>
+              ))}
+            </ul>
           </Module>
 
           {/* ── GALLERY ── */}
@@ -301,39 +328,30 @@ function App() {
               ))}
             </div>
 
-            {/* 送り出し。ホバーで全体が止まるので、動いていても選べる */}
-            <div className="d2-belts">
-              {BELTS.map((belt, b) => (
-                <div
-                  className="d2-belt"
-                  key={`belt-${b}`}
-                  data-dir={b % 2 ? 'rev' : undefined}
-                  style={{ '--dur': `${32 + b * 9}s` }}
+            {/* 面のなかを漂う。ホバーで全体が止まるので、動いていても選べる */}
+            <ul className="d2-float">
+              {FLOATS.map(item => (
+                <li
+                  key={item.name}
+                  className="d2-icon"
+                  style={{
+                    '--brand': brandColor(item),
+                    '--x': `${item.x.toFixed(2)}%`,
+                    '--y': `${item.y.toFixed(2)}%`,
+                    '--sz': `${item.size.toFixed(1)}px`,
+                    '--dur': `${item.dur.toFixed(2)}s`,
+                    '--delay': `${item.delay.toFixed(2)}s`,
+                  }}
+                  data-rev={item.rev || undefined}
+                  data-state={activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined}
+                  onMouseEnter={() => setHoverItem(item.name)}
+                  onMouseLeave={() => setHoverItem(null)}
                 >
-                  <ul className="d2-belt-track">
-                    {[...belt, ...belt].map((item, k) => {
-                      const dup = k >= belt.length
-                      return (
-                        <li
-                          key={`${item.name}-${k}`}
-                          className="d2-cell"
-                          style={{ '--brand': brandColor(item) }}
-                          data-state={
-                            activeCat ? (activeCat === item.key ? 'on' : 'off') : undefined
-                          }
-                          aria-hidden={dup || undefined}
-                          onMouseEnter={() => setHoverItem(item.name)}
-                          onMouseLeave={() => setHoverItem(null)}
-                        >
-                          <StackIcon item={item} />
-                          {!dup && <span className="d2-sr">{item.name}</span>}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
+                  <StackIcon item={item} />
+                  <span className="d2-sr">{item.name}</span>
+                </li>
               ))}
-            </div>
+            </ul>
 
             <p className="d2-readout">{readout}</p>
           </Module>
