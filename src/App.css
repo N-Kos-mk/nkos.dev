@@ -6,22 +6,6 @@
    ※ App.css はサイト全体に適用される。旧デザインのページ側は old- で隔離してある
    ============================================================ */
 
-.board {
-  min-height: 100dvh;
-  display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  background: var(--ink);
-  color: var(--grey);
-  font-family: var(--jp);
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-.board :focus-visible {
-  outline: 1px solid var(--brass);
-  outline-offset: 2px;
-}
-
 /* ── 罫線 ──
    border ではなく要素として持つことで、引かれる向き・順番・速度を制御できる */
 .vline,
@@ -92,6 +76,36 @@
   animation-delay: 380ms;
 }
 
+/* 区画の呼び名だけが入れ替わる。「— KOS.N — 年」は消さず、
+   呼び名が畳まれれば詰められ、伸びれば押し上げられる。
+   縦組みでは inline 軸が縦にあたるため、畳むのは max-inline-size */
+.rail-label {
+  display: inline-block;
+  overflow: hidden;
+  max-inline-size: 124px;
+  margin-inline-end: 0.4em;
+  transition: max-inline-size 0.42s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-inline-end 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 文字そのものは枠の外へ抜ける。枠が伏せているので、下へ消えていくように見える */
+.rail-label-in {
+  display: inline-block;
+  translate: 0 0;
+  transition: translate 0.42s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.rail-text[data-phase='out'] .rail-label {
+  max-inline-size: 0;
+  margin-inline-end: 0;
+}
+
+/* 親が 180 度回っているため、画面の下へ抜けるには符号を反転させる */
+.rail-text[data-phase='out'] .rail-label-in {
+  translate: 0 -30px;
+  opacity: 0;
+}
+
 /* ── 面の構成 ── */
 .board-main {
   display: grid;
@@ -104,11 +118,6 @@
    面の下端に着く要素（注記帯・読み取り欄・リンク）を各モジュールに
    ひとつ持たせてあるので、伸びても宙に浮いた空白にはならない */
 @media (min-width: 1001px) and (min-height: 760px) {
-  .board {
-    height: 100dvh;
-    overflow: hidden;
-  }
-
   .board-main {
     grid-template-rows: minmax(0, 0.85fr) minmax(0, 1fr) min-content;
   }
@@ -850,6 +859,7 @@
   }
 }
 
+
 /* 漂い。速さ・開始位置・進行方向に加えて、振れ幅も個体ごとに変える */
 @keyframes drift {
   0% {
@@ -904,14 +914,6 @@
 
 /* ── Responsive ── */
 @media (max-width: 1000px) {
-  .board {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .rail {
-    display: none;
-  }
-
   .board-main {
     grid-template-rows: none;
   }
@@ -969,13 +971,3 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .board *,
-  .board *::before,
-  .board *::after {
-    animation-duration: 0.001ms !important;
-    animation-delay: 0ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-}

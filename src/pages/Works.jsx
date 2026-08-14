@@ -29,7 +29,6 @@ export default function Works() {
       title="Works"
       meta={countLabel(works.length)}
       lead="Things I've built"
-      railText="WORKS — KOS.N — 2026"
     >
       <div className="p-row p-row--index">
         <HLine />

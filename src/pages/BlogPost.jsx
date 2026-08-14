@@ -22,7 +22,6 @@ export default function BlogPost() {
         title="Not found"
         meta="404"
         lead="記事が見つかりませんでした。"
-        railText="ENTRY — KOS.N — 2026"
       >
         <div className="p-row">
           <HLine />
@@ -50,7 +49,6 @@ export default function BlogPost() {
       jpTitle
       meta={fmtDate(post.date)}
       lead={post.excerpt}
-      railText="ENTRY — KOS.N — 2026"
     >
       <div className="p-row p-row--aside">
         <HLine />
