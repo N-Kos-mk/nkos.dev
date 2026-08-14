@@ -432,48 +432,40 @@
 }
 
 /* ── Works の送り ──
-   制作物の表紙を横に流す。並べ切れない枚数を面に収めるための送りであり、
-   同じ並びを 2 周分つないで半分だけ動かすことで継ぎ目なく回している */
+   制作物の表紙を 1 枚ずつ面いっぱいに出し、コマとして横に送る。
+   連続して流さないのは、盤面で動くものを増やさないため */
 .reel {
-  display: flex;
-  align-items: center;
+  position: relative;
   flex: 1;
-  min-height: 128px;
+  min-height: 176px;
   overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--panel);
 }
 
+/* 面の高さは flex で決まるため、帯は絶対配置で面に貼り付ける。
+   高さを % で追わせると、面の高さが確定する前に潰れることがある */
 .reel-track {
+  position: absolute;
+  inset: 0;
   display: flex;
-  gap: 10px;
-  width: max-content;
   margin: 0;
   padding: 0;
   list-style: none;
-  animation: reel calc(var(--n, 4) * 4.2s) linear infinite;
-}
-
-/* 指している間は全体を止める。流れていても選べるようにする */
-.reel:hover .reel-track {
-  animation-play-state: paused;
+  transform: translateX(calc(var(--slide, 0) * -100%));
+  transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reel-slide {
-  flex: 0 0 auto;
-  width: clamp(132px, 12vw, 176px);
+  flex: 0 0 100%;
+  min-width: 0;
 }
 
 .reel-link {
   position: relative;
   display: block;
-  aspect-ratio: 3 / 2;
+  height: 100%;
   overflow: hidden;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  transition: border-color 0.25s;
-}
-
-.reel-link:hover {
-  border-color: rgba(210, 168, 87, 0.5);
 }
 
 /* 明度は落とさず、色味だけ真鍮側へ寄せる。指したときに本来の色へ戻る */
@@ -502,14 +494,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 22px 9px 8px;
-  font-size: 11px;
-  line-height: 1.35;
+  padding: 30px 14px 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
   color: var(--paper);
   background: linear-gradient(to top, rgba(10, 10, 12, 0.88), transparent);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* 送りインジケータ。Gallery と同じ 28×2px の直線で位置を示す */
+.reel-ticks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 12px;
 }
 
 /* ── Stack ── */
@@ -858,14 +858,6 @@
   }
   100% {
     transform: translate(calc(-11px * var(--amp, 1)), calc(-5px * var(--amp, 1)));
-  }
-}
-
-/* 送り。2 周分つないだ帯を半分だけ動かす。
-   gap のぶん半コマずれるため、その半分を引いて継ぎ目を合わせる */
-@keyframes reel {
-  to {
-    transform: translateX(calc(-50% - 5px));
   }
 }
 

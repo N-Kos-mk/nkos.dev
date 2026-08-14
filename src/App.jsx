@@ -15,9 +15,6 @@ import './App.css'
 
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
 
-/* 送りを継ぎ目なく回すため、同じ並びを 2 周分つなげて半分だけ動かす */
-const REEL = [...works, ...works]
-
 const ID_FACTS = [
   { Icon: MapPin, text: 'Tokyo, Japan' },
   { Icon: GraduationCap, text: 'The University of Electro-Communications' },
@@ -81,6 +78,8 @@ const shuffleFloats = () => {
 
 function App() {
   const [shot, setShot] = useState(0)
+  const [slide, setSlide] = useState(0)
+  const [holdReel, setHoldReel] = useState(false)
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
   const [hoverItem, setHoverItem] = useState(null)
@@ -91,6 +90,14 @@ function App() {
     const id = setInterval(() => setShot(i => (i + 1) % PHOTOS.length), 4600)
     return () => clearInterval(id)
   }, [])
+
+  /* 制作物の送り。Gallery と同期して見えないよう間隔をずらしてある。
+     指している間は止める。コマが替わった先を誤って押さないため */
+  useEffect(() => {
+    if (holdReel || works.length < 2) return
+    const id = setInterval(() => setSlide(i => (i + 1) % works.length), 5200)
+    return () => clearInterval(id)
+  }, [holdReel])
 
   const latest = posts.slice(0, 2)
 
@@ -235,32 +242,51 @@ function App() {
           {/* ── WORKS ── */}
           <Module tag="Works" meta={`${works.length} items`} className="works" order={3}>
             {works.length > 0 ? (
-              /* 表紙を横に流す。指している間は止まるので、動いていても選べる */
-              <div className="reel">
-                <ul className="reel-track" style={{ '--n': works.length }}>
-                  {REEL.map((w, i) => {
-                    const dup = i >= works.length
-                    return (
-                      <li className="reel-slide" key={`${w.slug}-${i}`} aria-hidden={dup || undefined}>
-                        <Link
-                          className="reel-link"
-                          to={`/works/${w.slug}`}
-                          tabIndex={dup ? -1 : undefined}
-                        >
-                          {w.thumbnail ? (
-                            <img src={w.thumbnail} alt="" />
-                          ) : (
-                            <span className="reel-blank">
-                              <ImageOff size={16} strokeWidth={1.5} aria-hidden="true" />
-                            </span>
-                          )}
-                          <span className="reel-cap">{w.title}</span>
-                        </Link>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
+              <>
+                {/* 表紙を 1 コマずつ横に送る。指している間は送りを止める */}
+                <div
+                  className="reel"
+                  onMouseEnter={() => setHoldReel(true)}
+                  onMouseLeave={() => setHoldReel(false)}
+                >
+                  <ul className="reel-track" style={{ '--slide': slide }}>
+                    {works.map((w, i) => {
+                      const off = i !== slide
+                      return (
+                        <li className="reel-slide" key={w.slug} aria-hidden={off || undefined}>
+                          <Link
+                            className="reel-link"
+                            to={`/works/${w.slug}`}
+                            tabIndex={off ? -1 : undefined}
+                          >
+                            {w.thumbnail ? (
+                              <img src={w.thumbnail} alt="" />
+                            ) : (
+                              <span className="reel-blank">
+                                <ImageOff size={18} strokeWidth={1.5} aria-hidden="true" />
+                              </span>
+                            )}
+                            <span className="reel-cap">{w.title}</span>
+                          </Link>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+
+                <div className="reel-ticks">
+                  {works.map((w, i) => (
+                    <button
+                      key={`tick-${w.slug}`}
+                      type="button"
+                      className="tick"
+                      data-on={i === slide || undefined}
+                      aria-label={`${i + 1} 件目 — ${w.title}`}
+                      onClick={() => setSlide(i)}
+                    />
+                  ))}
+                </div>
+              </>
             ) : (
               <p className="empty">まだ制作物はありません</p>
             )}
