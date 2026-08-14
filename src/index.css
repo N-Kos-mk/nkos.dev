@@ -1,5 +1,5 @@
 :root {
-  /* ── 既存ページ（About / Blog / ComingSoon / Troll）が参照するトークン。値は変更しない ── */
+  /* ── 旧デザインのトークン。現在の参照は Troll のみ。値は変更しない ── */
   --old-bg: #080810;
   --old-text: #94a3b8;
   --old-text-h: #f8fafc;

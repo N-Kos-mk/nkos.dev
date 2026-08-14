@@ -1,277 +1,141 @@
-/* ── Panel ── */
-.old-about-panel {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  overflow-y: auto;
-  background: var(--old-bg);
-  transform: translateY(100vh);
-  visibility: hidden;
-  transition:
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0s 0.65s;
+/* ============================================================
+   About — 観測盤の言語で組んだプロフィール
+   角丸・影は使わず、区切りは 1px の罫線のみ。
+   ============================================================ */
+
+.ab-bio {
+  font-size: 14.5px;
+  color: var(--grey);
 }
 
-.old-about-panel--open {
-  transform: translateY(0);
-  visibility: visible;
-  transition:
-    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-    visibility 0s 0s;
-}
-
-/* ── Sticky topbar ── */
-.old-about-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  padding: 14px 24px;
-  background: rgba(8, 8, 16, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--old-card-border);
-}
-
-.old-about-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  color: var(--old-accent);
-  opacity: 0.55;
-  background: none;
-  border: none;
+/* 注記帯。トップページの id-facts と同じ語彙だが、面が縦に長いので縦積みにする */
+.ab-facts,
+.int-list,
+.ct-list {
+  margin: 18px 0 0;
   padding: 0;
-  cursor: pointer;
-  transition: opacity 0.2s;
-
-  &:hover { opacity: 1; }
-}
-
-/* ── Content wrapper ── */
-.old-about-content {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 60px 24px 120px;
-  display: flex;
-  flex-direction: column;
-  gap: 72px;
-}
-
-/* ── Hero ── */
-.old-about-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-  animation: aboutFadeUp 0.6s 0.1s ease both;
-}
-
-.old-about-avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 4px;
-  border: 2px solid var(--old-card-border);
-}
-
-.old-about-name {
-  font-size: clamp(26px, 5vw, 44px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: var(--old-text-h);
-  margin: 0;
-}
-
-.old-about-role {
-  font-size: 0.95rem;
-  color: var(--old-accent);
-  opacity: 0.85;
-  margin: 0;
-}
-
-.old-about-tagline {
-  font-size: 1rem;
-  color: var(--old-text);
-  max-width: 400px;
-  margin: 0;
-  line-height: 1.7;
-}
-
-/* ── Sections ── */
-.old-about-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  animation: aboutFadeUp 0.6s ease both;
-}
-
-.old-about-section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--old-accent);
-  opacity: 0.65;
-  margin: 0;
-}
-
-/* ── Bio ── */
-.old-about-bio {
-  font-size: 1rem;
-  color: var(--old-text);
-  line-height: 1.85;
-  margin: 0;
-}
-
-.old-about-facts {
   list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  border-top: 1px solid var(--line-soft);
 }
 
-.old-about-facts li {
+.ab-facts li,
+.int-list li,
+.ct-list li {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-  color: var(--old-text-h);
+  gap: 11px;
+  padding: 11px 0;
+  font-size: 12.5px;
+  color: var(--grey);
+  border-bottom: 1px solid var(--line-soft);
 }
 
-.old-fact-icon {
-  color: var(--old-accent);
-  opacity: 0.7;
-  flex-shrink: 0;
+.ab-facts li:hover .fact-mark,
+.int-list li:hover .fact-mark,
+.ct-list li:hover .fact-mark {
+  border-color: rgba(210, 168, 87, 0.5);
+  background: rgba(210, 168, 87, 0.08);
 }
 
-/* ── Dummy photo ── */
-.old-dummy-photo {
-  height: 200px;
-  border-radius: 12px;
-  background: var(--old-card-bg);
-  border: 2px dashed var(--old-card-border);
+.ct-pending {
+  color: var(--dim);
+}
+
+/* ── 写真枠 ── */
+.ab-photo {
+  min-width: 0;
+}
+
+.ab-shot {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.88rem;
-  color: var(--old-text);
-  opacity: 0.35;
-}
-
-/* ── Skills ── */
-.old-skill-block {
-  display: flex;
+  flex: 1;
   flex-direction: column;
-  gap: 10px;
+  margin: 16px 0 0;
 }
 
-.old-skill-block-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--old-text-h);
-  opacity: 0.6;
-  margin: 0;
+.ab-shot-body {
+  display: grid;
+  place-items: center;
+  flex: 1;
+  min-height: 176px;
+  color: var(--dim);
+  background: var(--panel);
+  border: 1px solid var(--line);
 }
 
-/* スキルチップ */
-.old-skill-chips {
+.ab-shot figcaption {
+  padding-top: 10px;
+  font: 400 10.5px var(--display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* ── Skills ──
+   群ごとに 1 行を割り当て、左に群の名前、右に項目を流す */
+.sk-groups {
+  border-top: 1px solid var(--line-soft);
+}
+
+.sk-group {
+  display: grid;
+  grid-template-columns: clamp(96px, 11vw, 150px) minmax(0, 1fr);
+  gap: 8px 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.sk-group-name {
+  font-size: 12.5px;
+  color: var(--dim);
+}
+
+.sk-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-}
-
-.old-skill-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.82rem;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: var(--old-card-bg);
-  border: 1px solid var(--old-card-border);
-  color: var(--old-text-h);
-  transition: border-color 0.2s, transform 0.2s;
-}
-
-.old-skill-chip:hover {
-  border-color: var(--old-card-border-hover);
-  transform: translateY(-2px);
-}
-
-.old-skill-more-link {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--old-accent);
-  opacity: 0.75;
-  text-decoration: none;
-  transition: opacity 0.2s;
-}
-
-.old-skill-more-link:hover {
-  opacity: 1;
-}
-
-/* ── Interests ── */
-.old-interests-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-}
-
-.old-interest-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  background: var(--old-card-bg);
-  border: 1px solid var(--old-card-border);
-  font-size: 0.88rem;
-  color: var(--old-text);
-}
-
-/* ── Contact ── */
-.old-contact-list {
-  list-style: none;
-  padding: 0;
+  gap: 10px 22px;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  padding: 0;
+  list-style: none;
 }
 
-.old-contact-list li {
-  display: flex;
+.sk-item {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--old-text);
-  opacity: 0.7;
+  gap: 9px;
 }
 
-.old-contact-list a {
-  color: var(--old-accent);
-  text-decoration: none;
-  transition: opacity 0.15s;
-
-  &:hover { opacity: 0.7; }
+/* アイコンは直に置かず 24px の枠に収め、当たり判定を枠に一本化する */
+.sk-mark {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--grey);
+  border: 1px solid var(--line);
+  transition: color 0.25s, border-color 0.25s, background 0.25s;
 }
 
-.old-contact-pending {
-  color: var(--old-text);
-  opacity: 0.35;
-  font-size: 0.88rem;
+/* 既定は単色。指したものだけが本来のブランド色になる */
+.sk-item:hover .sk-mark {
+  color: var(--brand);
+  border-color: rgba(210, 168, 87, 0.5);
+  background: rgba(210, 168, 87, 0.08);
 }
 
-/* ── Animation ── */
-@keyframes aboutFadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+.sk-name {
+  font-size: 12.5px;
+  color: var(--dim);
+  transition: color 0.25s;
+}
+
+.sk-item:hover .sk-name {
+  color: var(--paper);
+}
+
+@media (max-width: 560px) {
+  .sk-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

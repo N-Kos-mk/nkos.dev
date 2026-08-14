@@ -1,0 +1,257 @@
+/* ============================================================
+   下層ページ共通の枠 — トップページの観測盤をそのまま持ち込む
+   区切りは 1px の罫線だけ。角丸と影は使わず、有彩色は真鍮のみ。
+   モジュール（.mod / .vline / .hline / .index-* など）は App.css の
+   定義をそのまま使い、ここではページ固有の骨組みだけを持つ。
+   ============================================================ */
+
+.page-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── 上部の帯 ──
+   ページを移っても nkos.dev が残り、現在地と行き先が常に読める */
+.p-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: stretch;
+  gap: clamp(12px, 2vw, 28px);
+  height: 46px;
+  padding-left: clamp(16px, 1.8vw, 26px);
+  background: var(--ink);
+}
+
+.p-top > .hline {
+  animation-delay: 40ms;
+}
+
+.p-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 500 12px var(--display);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--paper);
+  white-space: nowrap;
+  transition: color 0.25s;
+  animation: fade-in-left 0.55s 180ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.p-brand:hover {
+  color: var(--brass);
+}
+
+/* 銘板の打点。帯の左端を締める 5px の正方形。
+   通電している計器の標識として、不定期に明滅させる */
+.p-brand-mark {
+  width: 5px;
+  height: 5px;
+  background: var(--brass);
+  transition: background 0.25s;
+  animation: beacon 8.3s 900ms steps(1, end) infinite backwards;
+}
+
+.p-brand:hover .p-brand-mark {
+  background: var(--paper);
+}
+
+.p-tabs {
+  display: flex;
+  margin-left: auto;
+  animation: fade-in 0.55s 280ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.p-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 clamp(11px, 1.3vw, 18px);
+  font: 600 13px var(--display);
+  letter-spacing: -0.01em;
+  color: var(--dim);
+  transition: color 0.25s, background 0.3s;
+}
+
+.p-tab:hover {
+  color: var(--paper);
+  background: rgba(210, 168, 87, 0.07);
+}
+
+.p-tab[aria-current='page'] {
+  color: var(--paper);
+}
+
+/* 現在地は送りインジケータと同じ 28×2px の直線で示す */
+.p-tab[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 9px;
+  width: 28px;
+  height: 2px;
+  translate: -50% 0;
+  background: var(--brass);
+}
+
+/* ── 銘板見出し ── */
+.p-banner {
+  position: relative;
+  padding: clamp(22px, 3vw, 40px) clamp(16px, 1.8vw, 26px) clamp(20px, 2.4vw, 32px);
+}
+
+.p-banner > .hline {
+  animation-delay: 120ms;
+}
+
+.p-banner-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(16px, 2.5vw, 32px);
+}
+
+.p-banner-body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 盤面で唯一の巨大文字。可変フォントの字幅が広がって定位置に収まる */
+.p-title {
+  font-family: var(--display);
+  font-size: clamp(38px, 5.4vw, 84px);
+  font-weight: 700;
+  font-variation-settings: 'wdth' 118, 'wght' 700;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  color: var(--paper);
+  animation: expand 1.05s 520ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* 記事タイトルなど日本語の見出し。字幅軸を持たないため、立ち上げ方も変える */
+.p-title--jp {
+  font-family: var(--jp);
+  font-size: clamp(22px, 3.1vw, 38px);
+  font-variation-settings: normal;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  animation: fade-in 0.6s 520ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.p-lead {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--dim);
+  animation: fade-in 0.55s 640ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* ── 行 ── */
+.p-row {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.p-row--split {
+  grid-template-columns: 7fr 5fr;
+}
+
+.p-row--aside {
+  grid-template-columns: minmax(0, 1fr) clamp(258px, 26vw, 336px);
+}
+
+.p-row--half {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* 行の先頭には区切りの縦罫を引かない */
+.p-row > .mod:first-of-type .vline {
+  display: none;
+}
+
+/* 中身が少なくても索引が画面の下端に着くよう、最後の行が余った高さを吸う。
+   各モジュールは下端に着く要素（読み取り欄・リンク・枠）を持たせてあるので、
+   面が伸びても宙に浮いた空白にはならない */
+.page-main > .p-row:last-of-type {
+  flex: 1;
+}
+
+/* 中身が主役のページでは、トップページより早く読めた方がよい。
+   モジュール名 → 件数 → 中身という順番は保ったまま、後ろ 2 つを前に寄せる */
+.p-row .mod .mod-meta {
+  animation-delay: calc(560ms + var(--i, 0) * 45ms);
+}
+
+.p-row .mod > *:not(.mod-head):not(.vline) {
+  animation-delay: calc(620ms + var(--i, 0) * 45ms);
+}
+
+/* ── Animations ──
+   打点の明滅。等間隔だと機械の点滅に見えるため、間隔を揃えずに散らしてある */
+@keyframes beacon {
+  0%,
+  10.8% {
+    opacity: 1;
+  }
+  11% {
+    opacity: 0.12;
+  }
+  12.4% {
+    opacity: 1;
+  }
+  13.2% {
+    opacity: 0.12;
+  }
+  14% {
+    opacity: 1;
+  }
+  46% {
+    opacity: 0.12;
+  }
+  46.9% {
+    opacity: 1;
+  }
+  71% {
+    opacity: 0.12;
+  }
+  71.8% {
+    opacity: 1;
+  }
+  72.6% {
+    opacity: 0.12;
+  }
+  73.6%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ── Responsive ──
+   縦積みの折り返しと縦罫の始末は App.css 側の 1000px 以下の指定を共用する */
+@media (max-width: 1000px) {
+  .p-row--split,
+  .p-row--aside,
+  .p-row--half {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .p-top {
+    gap: 8px;
+    padding-left: 16px;
+  }
+
+  .p-brand {
+    letter-spacing: 0.18em;
+  }
+
+  .p-tab {
+    padding: 0 10px;
+    font-size: 12px;
+  }
+}
+

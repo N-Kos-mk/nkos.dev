@@ -1,0 +1,57 @@
+/* ============================================================
+   盤面の外枠 — 左端の銘板と、その右に開く面
+   ページを移っても引き直されないよう、ここがルーターの外側にあたる。
+   ============================================================ */
+
+.shell {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  background: var(--ink);
+  color: var(--grey);
+  font-family: var(--jp);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.shell :focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 2px;
+}
+
+/* 銘板はスクロールしても縁として残す */
+.shell .rail {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100dvh;
+}
+
+/* トップページだけは一画面に収め、スクロールを出さない */
+@media (min-width: 1001px) and (min-height: 760px) {
+  .shell[data-top] {
+    height: 100dvh;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 1000px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shell .rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell *,
+  .shell *::before,
+  .shell *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
