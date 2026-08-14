@@ -62,10 +62,6 @@ export default function PageFrame({
       {children}
 
       <IndexNav current={indexCurrent} />
-
-      <footer className="p-foot">
-        <span className="p-copy">© 2026- nkos.dev</span>
-      </footer>
     </div>
   )
 }
