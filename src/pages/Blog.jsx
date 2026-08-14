@@ -29,7 +29,6 @@ export default function Blog() {
       title="Blog"
       meta={countLabel(posts.length)}
       lead="Thoughts & notes"
-      railText="BLOG — KOS.N — 2026"
     >
       <div className="p-row p-row--index">
         <HLine />

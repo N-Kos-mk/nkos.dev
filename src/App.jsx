@@ -8,7 +8,6 @@ import { featured } from './lib/works.js'
 import { STACK } from './data/stack.js'
 import { ID_FACTS } from './data/profile.js'
 import { PHOTOS } from './data/photos.js'
-import Rail from './components/Rail.jsx'
 import Module from './components/Module.jsx'
 import EntryItem from './components/EntryItem.jsx'
 import StackIcon from './components/StackIcon.jsx'
@@ -125,11 +124,7 @@ function App() {
     (activeCat ? STACK.find(g => g.key === activeCat).label : `${STACK_FLAT.length} items`)
 
   return (
-    <div className="board">
-      {/* 左端の銘板。ページ全体の縁を締める */}
-      <Rail text="PORTFOLIO — KOS.N — 2026" />
-
-      <main className="board-main">
+    <main className="board-main">
         <div className="row row--a">
           <HLine />
 
@@ -259,7 +254,7 @@ function App() {
 
           {/* ── WORKS ── */}
           <Module
-            tag="Works"
+            tag="Featured"
             meta={featured.length > 0 ? `${active + 1} / ${featured.length}` : undefined}
             className="works"
             order={3}
@@ -355,10 +350,9 @@ function App() {
           </Module>
         </div>
 
-        {/* ── INDEX ── */}
-        <IndexNav />
-      </main>
-    </div>
+      {/* ── INDEX ── */}
+      <IndexNav />
+    </main>
   )
 }
 

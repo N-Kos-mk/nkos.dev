@@ -22,7 +22,6 @@ export default function WorkPost() {
         title="Not found"
         meta="404"
         lead="制作物が見つかりませんでした。"
-        railText="WORKS — KOS.N — 2026"
       >
         <div className="p-row">
           <HLine />
@@ -54,7 +53,6 @@ export default function WorkPost() {
       jpTitle
       meta={`${no} — ${fmtDate(work.date)}`}
       lead={work.excerpt}
-      railText="WORKS — KOS.N — 2026"
     >
       <div className="p-row p-row--aside">
         <HLine />

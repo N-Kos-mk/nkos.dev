@@ -24,6 +24,20 @@ export const INDEX_LINKS = [
 /* 上部の帯に常設するタブ。ページを移っても行き先が変わらないようにする */
 export const TABS = [SITE_LINKS.about, SITE_LINKS.blog, SITE_LINKS.works]
 
+/* いま居る区画。銘板の文字とページタイトルの両方がこれを見る */
+export const sectionOf = pathname => {
+  if (pathname.startsWith('/about')) return 'ABOUT'
+  if (pathname.startsWith('/blog')) return 'BLOG'
+  if (pathname.startsWith('/works')) return 'WORKS'
+  return 'HOME'
+}
+
+/* 銘板ではトップを PORTFOLIO と呼ぶ。ページタイトル側は HOME のまま */
+export const railLabelOf = pathname => {
+  const section = sectionOf(pathname)
+  return section === 'HOME' ? 'PORTFOLIO' : section
+}
+
 export const tokyoTime = () =>
   new Intl.DateTimeFormat('ja-JP', {
     timeZone: 'Asia/Tokyo',
@@ -32,6 +46,10 @@ export const tokyoTime = () =>
     second: '2-digit',
     hour12: false,
   }).format(new Date())
+
+/* 年もビルド時に焼かず、時計と同じく実行時に取り直す */
+export const tokyoYear = () =>
+  new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', year: 'numeric' }).format(new Date())
 
 export const fmtDate = value => {
   const d = new Date(value)

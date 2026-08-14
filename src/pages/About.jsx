@@ -45,7 +45,6 @@ export default function About() {
       title="Kos.N"
       meta="he / him"
       lead="Building things with code and curiosity."
-      railText="ABOUT — KOS.N — 2026"
       figure={
         <figure className="id-plate">
           <img src="/images/avatar.png" alt="" />
