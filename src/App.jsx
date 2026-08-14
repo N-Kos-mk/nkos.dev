@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, GraduationCap, ArrowUpRight, ImageOff } from 'lucide-react'
+import { MapPin, ArrowUpRight, ImageOff } from 'lucide-react'
 import { posts } from './lib/blog.js'
 import { fmtDate } from './lib/site.js'
-import { STACK, STACK_FLAT, brandColor } from './lib/stack.js'
-import { works } from './lib/works.js'
+import { STACK_FLAT, brandColor } from './lib/stack.js'
+import { featured } from './lib/works.js'
+import { STACK } from './data/stack.js'
+import { ID_FACTS } from './data/profile.js'
+import { PHOTOS } from './data/photos.js'
 import Rail from './components/Rail.jsx'
 import Module from './components/Module.jsx'
 import EntryItem from './components/EntryItem.jsx'
@@ -15,18 +18,9 @@ import './App.css'
 
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
 
-const ID_FACTS = [
-  { Icon: MapPin, text: 'Tokyo, Japan' },
-  { Icon: GraduationCap, text: 'The University of Electro-Communications' },
-]
-
-/* 差し替え用のダミー。同じ画像を object-position だけ変えて並べている。
-   実写真が入ったら src / place / note を入れ替えるだけでよい */
-const PHOTOS = [
-  { src: '/images/avatar.png', place: '東京都', note: 'dummy', pos: 'center 28%' },
-  { src: '/images/avatar.png', place: '静岡県', note: 'dummy', pos: 'center 55%' },
-  { src: '/images/avatar.png', place: '京都府', note: 'dummy', pos: 'center 82%' },
-]
+/* 送りを右方向のまま一周させるため、末尾に先頭の複製を 1 枚足す。
+   最後まで送ったら複製の上で遷移を切り、先頭へ黙って戻す */
+const REEL = featured.length > 0 ? [...featured, featured[0]] : []
 
 /* 決定的なゆらぎ。index から生成するので、再描画しても値は変わらない。
    乱数だと状態が更新されるたびに配置が飛ぶ */
@@ -79,6 +73,7 @@ const shuffleFloats = () => {
 function App() {
   const [shot, setShot] = useState(0)
   const [slide, setSlide] = useState(0)
+  const [snapReel, setSnapReel] = useState(false)
   const [holdReel, setHoldReel] = useState(false)
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
@@ -92,14 +87,37 @@ function App() {
   }, [])
 
   /* 制作物の送り。Gallery と同期して見えないよう間隔をずらしてある。
-     指している間は止める。コマが替わった先を誤って押さないため */
+     指している間は止める。コマが替わった先を誤って押さないため。
+     複製の位置（= featured.length）まで進めてよく、戻しは遷移の終わりで行う */
   useEffect(() => {
-    if (holdReel || works.length < 2) return
-    const id = setInterval(() => setSlide(i => (i + 1) % works.length), 5200)
+    if (holdReel || featured.length < 2) return
+    /* 複製に着いた時点で戻しが走っているのが通常。上限で丸めているのは、
+       遷移が潰される環境で戻しが働かなかったときに空へ送らないための保険 */
+    const id = setInterval(() => setSlide(i => (i >= featured.length ? 0 : i + 1)), 5200)
     return () => clearInterval(id)
   }, [holdReel])
 
+  /* 複製に着いたら、遷移を切ってから先頭へ飛ばす。
+     切り替えを 2 フレーム待つのは、位置の書き換えが遷移として拾われないようにするため */
+  useEffect(() => {
+    if (!snapReel) return
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setSnapReel(false)))
+    return () => cancelAnimationFrame(id)
+  }, [snapReel])
+
   const latest = posts.slice(0, 2)
+
+  /* 複製の上に居るときは、実体としては先頭を指している */
+  const active = featured.length > 0 ? slide % featured.length : 0
+
+  /* 送り切ったところで遷移を切り、先頭へ黙って戻す。これで送りは常に右方向のまま。
+     子の transition（画像のフィルタなど）が上がってくるので、帯自身の位置変化だけを拾う */
+  const endReel = e => {
+    if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+    if (slide !== featured.length) return
+    setSnapReel(true)
+    setSlide(0)
+  }
 
   /* アイコンだけでは名前が読めないため、指したものを下段に表示する */
   const readout =
@@ -240,8 +258,13 @@ function App() {
           </Module>
 
           {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${works.length} items`} className="works" order={3}>
-            {works.length > 0 ? (
+          <Module
+            tag="Works"
+            meta={featured.length > 0 ? `${active + 1} / ${featured.length}` : undefined}
+            className="works"
+            order={3}
+          >
+            {featured.length > 0 ? (
               <>
                 {/* 表紙を 1 コマずつ横に送る。指している間は送りを止める */}
                 <div
@@ -249,15 +272,24 @@ function App() {
                   onMouseEnter={() => setHoldReel(true)}
                   onMouseLeave={() => setHoldReel(false)}
                 >
-                  <ul className="reel-track" style={{ '--slide': slide }}>
-                    {works.map((w, i) => {
-                      const off = i !== slide
+                  <ul
+                    className="reel-track"
+                    style={{ '--slide': slide }}
+                    data-snap={snapReel || undefined}
+                    onTransitionEnd={endReel}
+                  >
+                    {REEL.map((w, i) => {
+                      const shown = i === slide
                       return (
-                        <li className="reel-slide" key={w.slug} aria-hidden={off || undefined}>
+                        <li
+                          className="reel-slide"
+                          key={`${w.slug}-${i}`}
+                          aria-hidden={!shown || undefined}
+                        >
                           <Link
                             className="reel-link"
                             to={`/works/${w.slug}`}
-                            tabIndex={off ? -1 : undefined}
+                            tabIndex={shown && i < featured.length ? undefined : -1}
                           >
                             {w.thumbnail ? (
                               <img src={w.thumbnail} alt="" />
@@ -275,12 +307,12 @@ function App() {
                 </div>
 
                 <div className="reel-ticks">
-                  {works.map((w, i) => (
+                  {featured.map((w, i) => (
                     <button
                       key={`tick-${w.slug}`}
                       type="button"
                       className="tick"
-                      data-on={i === slide || undefined}
+                      data-on={i === active || undefined}
                       aria-label={`${i + 1} 件目 — ${w.title}`}
                       onClick={() => setSlide(i)}
                     />
@@ -290,11 +322,6 @@ function App() {
             ) : (
               <p className="empty">まだ制作物はありません</p>
             )}
-
-            <Link className="more" to="/works">
-              ほかの制作物
-              <ArrowUpRight size={15} />
-            </Link>
           </Module>
 
           {/* ── LOG ── */}
