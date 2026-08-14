@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, GraduationCap, ArrowUpRight } from 'lucide-react'
+import { MapPin, GraduationCap, ArrowUpRight, ImageOff } from 'lucide-react'
 import { posts } from './lib/blog.js'
 import { fmtDate } from './lib/site.js'
 import { STACK, STACK_FLAT, brandColor } from './lib/stack.js'
 import { works } from './lib/works.js'
 import Rail from './components/Rail.jsx'
 import Module from './components/Module.jsx'
+import EntryItem from './components/EntryItem.jsx'
 import StackIcon from './components/StackIcon.jsx'
-import WorkItem from './components/WorkItem.jsx'
 import IndexNav from './components/IndexNav.jsx'
 import { HLine } from './components/Rule.jsx'
 import './App.css'
 
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
+
+/* 送りを継ぎ目なく回すため、同じ並びを 2 周分つなげて半分だけ動かす */
+const REEL = [...works, ...works]
 
 const ID_FACTS = [
   { Icon: MapPin, text: 'Tokyo, Japan' },
@@ -231,13 +234,37 @@ function App() {
 
           {/* ── WORKS ── */}
           <Module tag="Works" meta={`${works.length} items`} className="works" order={3}>
-            <ul className="work-list">
-              {works.slice(0, 2).map(w => (
-                <li key={w.slug}>
-                  <WorkItem work={w} />
-                </li>
-              ))}
-            </ul>
+            {works.length > 0 ? (
+              /* 表紙を横に流す。指している間は止まるので、動いていても選べる */
+              <div className="reel">
+                <ul className="reel-track" style={{ '--n': works.length }}>
+                  {REEL.map((w, i) => {
+                    const dup = i >= works.length
+                    return (
+                      <li className="reel-slide" key={`${w.slug}-${i}`} aria-hidden={dup || undefined}>
+                        <Link
+                          className="reel-link"
+                          to={`/works/${w.slug}`}
+                          tabIndex={dup ? -1 : undefined}
+                        >
+                          {w.thumbnail ? (
+                            <img src={w.thumbnail} alt="" />
+                          ) : (
+                            <span className="reel-blank">
+                              <ImageOff size={16} strokeWidth={1.5} aria-hidden="true" />
+                            </span>
+                          )}
+                          <span className="reel-cap">{w.title}</span>
+                        </Link>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ) : (
+              <p className="empty">まだ制作物はありません</p>
+            )}
+
             <Link className="more" to="/works">
               ほかの制作物
               <ArrowUpRight size={15} />
@@ -255,17 +282,23 @@ function App() {
               <ul className="entries">
                 {latest.map(p => (
                   <li key={p.slug}>
-                    <Link className="entry" to={`/blog/${p.slug}`}>
-                      <span className="entry-date">{fmtDate(p.date)}</span>
-                      <span className="entry-title">{p.title}</span>
-                      {p.excerpt && <span className="entry-text">{p.excerpt}</span>}
-                    </Link>
+                    <EntryItem
+                      to={`/blog/${p.slug}`}
+                      stamp={fmtDate(p.date)}
+                      title={p.title}
+                      text={p.excerpt}
+                    />
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="empty">まだ記事はありません</p>
             )}
+
+            <Link className="more" to="/blog">
+              全ての記事を見る
+              <ArrowUpRight size={15} />
+            </Link>
           </Module>
         </div>
 

@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import PageFrame from '../components/PageFrame.jsx'
 import Module from '../components/Module.jsx'
 import Prose from '../components/Prose.jsx'
+import EntryItem from '../components/EntryItem.jsx'
 import { HLine } from '../components/Rule.jsx'
 import { works, getWork, serial } from '../lib/works.js'
 import { fmtDate } from '../lib/site.js'
@@ -80,10 +81,7 @@ export default function WorkPost() {
             <ul className="entries">
               {others.map(w => (
                 <li key={w.slug}>
-                  <Link className="entry" to={`/works/${w.slug}`}>
-                    <span className="entry-date">{w.no}</span>
-                    <span className="entry-title">{w.title}</span>
-                  </Link>
+                  <EntryItem to={`/works/${w.slug}`} stamp={w.no} title={w.title} />
                 </li>
               ))}
             </ul>

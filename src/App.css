@@ -404,54 +404,7 @@
   background: var(--brass);
 }
 
-/* ── Works ── */
-.work-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--line-soft);
-}
-
-.work-list li {
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.work {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 5px 10px;
-  padding: 13px 0;
-  transition: padding-left 0.25s;
-}
-
-.work:hover {
-  padding-left: 8px;
-}
-
-.work-name {
-  font: 600 clamp(15px, 1.4vw, 18px) var(--display);
-  letter-spacing: -0.01em;
-  color: var(--paper);
-}
-
-.work-arrow {
-  align-self: center;
-  color: var(--dim);
-  transition: color 0.25s, transform 0.25s;
-}
-
-.work:hover .work-arrow {
-  color: var(--brass);
-  transform: translate(3px, -3px);
-}
-
-.work-note {
-  grid-column: 1 / -1;
-  font-size: 12.5px;
-  line-height: 1.75;
-  color: var(--dim);
-}
-
+/* ── モジュール下端の補助リンク ── */
 .more {
   display: flex;
   align-items: baseline;
@@ -478,11 +431,85 @@
   transform: translate(3px, -3px);
 }
 
-.more-note {
-  font: 400 10.5px var(--display);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+/* ── Works の送り ──
+   制作物の表紙を横に流す。並べ切れない枚数を面に収めるための送りであり、
+   同じ並びを 2 周分つないで半分だけ動かすことで継ぎ目なく回している */
+.reel {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-height: 128px;
+  overflow: hidden;
+}
+
+.reel-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: reel calc(var(--n, 4) * 4.2s) linear infinite;
+}
+
+/* 指している間は全体を止める。流れていても選べるようにする */
+.reel:hover .reel-track {
+  animation-play-state: paused;
+}
+
+.reel-slide {
+  flex: 0 0 auto;
+  width: clamp(132px, 12vw, 176px);
+}
+
+.reel-link {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  transition: border-color 0.25s;
+}
+
+.reel-link:hover {
+  border-color: rgba(210, 168, 87, 0.5);
+}
+
+/* 明度は落とさず、色味だけ真鍮側へ寄せる。指したときに本来の色へ戻る */
+.reel-link img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) sepia(0.42) hue-rotate(-10deg) saturate(1.35) contrast(1.04);
+  transition: filter 0.45s ease;
+}
+
+.reel-link:hover img {
+  filter: none;
+}
+
+.reel-blank {
+  display: grid;
+  place-items: center;
+  height: 100%;
   color: var(--dim);
+}
+
+.reel-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 22px 9px 8px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--paper);
+  background: linear-gradient(to top, rgba(10, 10, 12, 0.88), transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Stack ── */
@@ -625,13 +652,31 @@
 }
 
 .entry {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 12px;
   padding: 13px 0;
   transition: padding-left 0.25s;
 }
 
 .entry:hover {
   padding-left: 8px;
+}
+
+.entry-body {
+  min-width: 0;
+}
+
+.entry-arrow {
+  flex-shrink: 0;
+  color: var(--dim);
+  transition: color 0.25s, transform 0.25s;
+}
+
+.entry:hover .entry-arrow {
+  color: var(--brass);
+  transform: translate(3px, -3px);
 }
 
 .entry-date {
@@ -813,6 +858,14 @@
   }
   100% {
     transform: translate(calc(-11px * var(--amp, 1)), calc(-5px * var(--amp, 1)));
+  }
+}
+
+/* 送り。2 周分つないだ帯を半分だけ動かす。
+   gap のぶん半コマずれるため、その半分を引いて継ぎ目を合わせる */
+@keyframes reel {
+  to {
+    transform: translateX(calc(-50% - 5px));
   }
 }
 
