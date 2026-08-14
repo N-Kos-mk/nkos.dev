@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import PageFrame from '../components/PageFrame.jsx'
 import Module from '../components/Module.jsx'
 import Prose from '../components/Prose.jsx'
+import EntryItem from '../components/EntryItem.jsx'
 import { HLine } from '../components/Rule.jsx'
 import { posts, getPost } from '../lib/blog.js'
 import { fmtDate } from '../lib/site.js'
@@ -76,10 +77,7 @@ export default function BlogPost() {
             <ul className="entries">
               {others.map(p => (
                 <li key={p.slug}>
-                  <Link className="entry" to={`/blog/${p.slug}`}>
-                    <span className="entry-date">{fmtDate(p.date)}</span>
-                    <span className="entry-title">{p.title}</span>
-                  </Link>
+                  <EntryItem to={`/blog/${p.slug}`} stamp={fmtDate(p.date)} title={p.title} />
                 </li>
               ))}
             </ul>
