@@ -1,16 +1,14 @@
-import { REPO } from './site.js'
+import { buildCollection } from './collection.js'
 
-/* トップページの Works モジュールと /works の一覧が同じ内容を指すよう、
-   ここ 1 か所で持つ */
-export const WORKS = [
-  {
-    name: 'nkos.dev',
-    note: 'このサイト。React + Vite で組み、Cloudflare Pages に置いている',
-    href: REPO,
-  },
-  {
-    name: 'MDX ブログ基盤',
-    note: '記事を MDX で書き、React コンポーネントをそのまま埋め込める仕組み',
-    to: '/blog',
-  },
-]
+/* ブログとまったく同じ仕組み。走査先のディレクトリだけが違う */
+const modules = import.meta.glob('../content/works/*/index.mdx', { eager: true })
+const covers = import.meta.glob('../content/works/*/cover.*', { eager: true, import: 'default' })
+
+export const works = buildCollection(modules, covers)
+
+export function getWork(slug) {
+  return works.find(w => w.slug === slug) ?? null
+}
+
+/* 並び順にそのまま振る通し番号。制作物は台帳として数えられた方が読める */
+export const serial = i => String(i + 1).padStart(2, '0')

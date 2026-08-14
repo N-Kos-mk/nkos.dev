@@ -7,6 +7,7 @@ import About from './pages/About.jsx'
 import Blog from './pages/Blog.jsx'
 import BlogPost from './pages/BlogPost.jsx'
 import Works from './pages/Works.jsx'
+import WorkPost from './pages/WorkPost.jsx'
 import Troll from './pages/Troll.jsx'
 
 createRoot(document.getElementById('root')).render(
@@ -18,6 +19,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/works" element={<Works />} />
+        <Route path="/works/:slug" element={<WorkPost />} />
         <Route path="/troll" element={<Troll />} />
       </Routes>
     </BrowserRouter>

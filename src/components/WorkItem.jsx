@@ -1,22 +1,13 @@
 import { Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 
-/* 制作物の 1 行。名前・矢印・注記の 3 点で組み、外部と内部で要素だけ切り替える */
+/* 制作物の 1 行。名前・矢印・注記の 3 点で組む */
 export default function WorkItem({ work }) {
-  const inner = (
-    <>
-      <span className="work-name">{work.name}</span>
+  return (
+    <Link className="work" to={`/works/${work.slug}`}>
+      <span className="work-name">{work.title}</span>
       <ArrowUpRight className="work-arrow" size={15} />
-      <span className="work-note">{work.note}</span>
-    </>
-  )
-  return work.href ? (
-    <a className="work" href={work.href} target="_blank" rel="noopener noreferrer">
-      {inner}
-    </a>
-  ) : (
-    <Link className="work" to={work.to}>
-      {inner}
+      {work.excerpt && <span className="work-note">{work.excerpt}</span>}
     </Link>
   )
 }

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MapPin, GraduationCap } from 'lucide-react'
+import { MapPin, GraduationCap, ArrowUpRight } from 'lucide-react'
 import { posts } from './lib/blog.js'
 import { fmtDate } from './lib/site.js'
 import { STACK, STACK_FLAT, brandColor } from './lib/stack.js'
-import { WORKS } from './lib/works.js'
+import { works } from './lib/works.js'
 import Rail from './components/Rail.jsx'
 import Module from './components/Module.jsx'
 import StackIcon from './components/StackIcon.jsx'
@@ -230,17 +230,17 @@ function App() {
           </Module>
 
           {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${WORKS.length} items`} className="works" order={3}>
+          <Module tag="Works" meta={`${works.length} items`} className="works" order={3}>
             <ul className="work-list">
-              {WORKS.map(w => (
-                <li key={w.name}>
+              {works.slice(0, 2).map(w => (
+                <li key={w.slug}>
                   <WorkItem work={w} />
                 </li>
               ))}
             </ul>
             <Link className="more" to="/works">
               ほかの制作物
-              <span className="more-note">準備中</span>
+              <ArrowUpRight size={15} />
             </Link>
           </Module>
 
