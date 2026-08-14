@@ -1,0 +1,222 @@
+/* ============================================================
+   Works — 制作物の一覧
+   仕組みは Blog と同じだが、記事ではなく台帳として読ませたいので
+   日付ではなく通し番号を頭に据え、図版は少し縦長に取る。
+   ============================================================ */
+
+.wk-modes {
+  margin-bottom: 18px;
+}
+
+.wk-modes .cat svg {
+  flex-shrink: 0;
+}
+
+.wk-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-soft);
+}
+
+.wk-list li {
+  /* 月から飛んできたとき、上部の帯に見出しが隠れないようにする */
+  scroll-margin-top: 62px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* 台帳の見出し。番号は真鍮の計測値、日付は添え書きとして引く。
+   記事一覧が日付を真鍮で立てているのと、ここで表と裏を入れ替えている */
+.wk-head {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wk-no {
+  font: 600 12px var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--brass);
+}
+
+.wk-date {
+  font: 400 10.5px var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+}
+
+/* ── ブロック表示 ──
+   隙間そのものを罫線色で塗り、1px の格子として見せる */
+.wk-list[data-mode='block'] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+}
+
+.wk-list[data-mode='block'] li {
+  background: var(--ink);
+  border-bottom: 0;
+  transition: background 0.3s;
+}
+
+.wk-list[data-mode='block'] li:hover {
+  background: rgba(210, 168, 87, 0.07);
+}
+
+.wk-list[data-mode='block'] .wk-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+  padding: 20px;
+}
+
+/* 番号と日付は、図版の上に一本の帯として渡す */
+.wk-list[data-mode='block'] .wk-head {
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* 面が点くので、行のときのような押し込みはしない */
+.wk-list[data-mode='block'] .wk-entry:hover {
+  padding-left: 20px;
+}
+
+.wk-list[data-mode='block'] .wk-arrow {
+  display: none;
+}
+
+/* ── リスト表示 ── */
+.wk-entry {
+  display: grid;
+  grid-template-columns: auto clamp(132px, 15vw, 196px) minmax(0, 1fr) auto;
+  gap: 0 24px;
+  align-items: start;
+  padding: 22px 0;
+  transition: padding-left 0.25s;
+}
+
+.wk-entry:hover {
+  padding-left: 8px;
+}
+
+/* 図版は 3:2。記事のサムネ（16:9）より少し縦に取り、台帳の図として見せる */
+.wk-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  color: var(--dim);
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.wk-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) sepia(0.42) hue-rotate(-10deg) saturate(1.35) contrast(1.04);
+  transition: filter 0.45s ease;
+}
+
+.wk-entry:hover .wk-thumb img {
+  filter: none;
+}
+
+.wk-body {
+  display: block;
+  min-width: 0;
+}
+
+/* 見出しが先頭に立つ。日付は左の帯に譲ってある */
+.wk-entry .entry-title {
+  margin-top: 0;
+  font-size: 15.5px;
+}
+
+.wk-entry .entry-text {
+  margin-top: 8px;
+  line-height: 1.8;
+}
+
+.wk-list + .readout {
+  padding-top: 18px;
+}
+
+.wk-arrow {
+  align-self: center;
+  flex-shrink: 0;
+  color: var(--dim);
+  transition: color 0.25s, transform 0.25s;
+}
+
+.wk-entry:hover .wk-arrow {
+  color: var(--brass);
+  transform: translate(3px, -3px);
+}
+
+/* ── 個別ページの脇 ── */
+.wk-side-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--grey);
+  transition: color 0.2s;
+}
+
+.wk-side-back:hover {
+  color: var(--brass);
+}
+
+.wk-side-back svg {
+  flex-shrink: 0;
+  transition: transform 0.25s;
+}
+
+.wk-side-back:hover svg {
+  transform: translate(3px, -3px);
+}
+
+.wk-side .entries {
+  margin-top: 16px;
+  border-top: 1px solid var(--line-soft);
+}
+
+@media (max-width: 560px) {
+  .wk-entry {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px 16px;
+    padding: 18px 0;
+  }
+
+  /* 番号の帯を横に寝かせ、図版と本文を下に回す */
+  .wk-entry .wk-head {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .wk-entry .wk-thumb {
+    grid-column: 1 / -1;
+  }
+
+  .wk-entry .wk-body {
+    grid-column: 1 / -1;
+  }
+
+  .wk-arrow {
+    display: none;
+  }
+
+  .wk-list[data-mode='block'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

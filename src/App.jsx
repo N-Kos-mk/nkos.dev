@@ -1,105 +1,25 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, ExternalLink, Code2, AppWindow, MapPin, GraduationCap } from 'lucide-react'
-import {
-  siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
-  siReact, siVite, siNodedotjs, siFastapi,
-  siMysql, siPostgresql, siSqlite,
-  siGit, siGithub, siLinux, siCloudflare, siCloudflareworkers, siVercel,
-} from 'simple-icons/icons'
+import { MapPin, ArrowUpRight, ImageOff } from 'lucide-react'
 import { posts } from './lib/blog.js'
+import { fmtDate } from './lib/site.js'
+import { STACK_FLAT, brandColor } from './lib/stack.js'
+import { featured } from './lib/works.js'
+import { STACK } from './data/stack.js'
+import { ID_FACTS } from './data/profile.js'
+import { PHOTOS } from './data/photos.js'
+import Module from './components/Module.jsx'
+import EntryItem from './components/EntryItem.jsx'
+import StackIcon from './components/StackIcon.jsx'
+import IndexNav from './components/IndexNav.jsx'
+import { HLine } from './components/Rule.jsx'
 import './App.css'
 
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
 
-const GITHUB = 'https://github.com/N-Kos-mk'
-const REPO = 'https://github.com/n-kos-mk/nkos.dev'
-
-/* ブランドカラーが黒に近く、暗い背景で沈むアイコンは白で描く */
-const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
-
-const ID_FACTS = [
-  { Icon: MapPin, text: '東京都' },
-  { Icon: GraduationCap, text: 'The University of Electro-Communications' },
-]
-
-/* 差し替え用のダミー。同じ画像を object-position だけ変えて並べている。
-   実写真が入ったら src / place / note を入れ替えるだけでよい */
-const PHOTOS = [
-  { src: '/images/avatar.png', place: '東京都', note: 'dummy', pos: 'center 28%' },
-  { src: '/images/avatar.png', place: '静岡県', note: 'dummy', pos: 'center 55%' },
-  { src: '/images/avatar.png', place: '京都府', note: 'dummy', pos: 'center 82%' },
-]
-
-const WORKS = [
-  {
-    name: 'nkos.dev',
-    note: 'このサイト。React + Vite で組み、Cloudflare Pages に置いている',
-    href: REPO,
-  },
-  {
-    name: 'MDX ブログ基盤',
-    note: '記事を MDX で書き、React コンポーネントをそのまま埋め込める仕組み',
-    to: '/blog',
-  },
-]
-
-const STACK = [
-  {
-    key: 'lang',
-    label: '言語',
-    items: [
-      { name: 'HTML', icon: siHtml5 },
-      { name: 'CSS', icon: siCss },
-      { name: 'JavaScript', icon: siJavascript },
-      { name: 'TypeScript', icon: siTypescript },
-      { name: 'Python', icon: siPython },
-      { name: 'PHP', icon: siPhp },
-    ],
-  },
-  {
-    key: 'fw',
-    label: 'フレームワーク',
-    items: [
-      { name: 'React', icon: siReact },
-      { name: 'Vite', icon: siVite },
-      { name: 'Node.js', icon: siNodedotjs },
-      { name: 'FastAPI', icon: siFastapi },
-    ],
-  },
-  {
-    key: 'db',
-    label: 'データベース',
-    items: [
-      { name: 'MySQL', icon: siMysql },
-      { name: 'PostgreSQL', icon: siPostgresql },
-      { name: 'SQLite', icon: siSqlite },
-    ],
-  },
-  {
-    key: 'infra',
-    label: 'インフラ・ツール',
-    items: [
-      { name: 'Git', icon: siGit },
-      { name: 'GitHub', icon: siGithub },
-      { name: 'VS Code', Icon: Code2 },
-      { name: 'Linux', icon: siLinux },
-      { name: 'Windows', Icon: AppWindow },
-      { name: 'Cloudflare', icon: siCloudflare },
-      { name: 'Workers', icon: siCloudflareworkers },
-      { name: 'Vercel', icon: siVercel },
-    ],
-  },
-]
-const STACK_FLAT = STACK.flatMap(g => g.items.map(item => ({ ...item, key: g.key })))
-
-const INDEX_LINKS = [
-  { label: 'About', note: '私について', to: '/about' },
-  { label: 'Blog', note: '書き残し', to: '/blog' },
-  { label: 'Works', note: 'プロジェクト等', to: '/works' },
-  /* 外部へ出るリンクなので、行き先を示すアイコンを変えている */
-  { label: 'GitHub', href: GITHUB, Icon: ExternalLink },
-]
+/* 送りを右方向のまま一周させるため、末尾に先頭の複製を 1 枚足す。
+   最後まで送ったら複製の上で遷移を切り、先頭へ黙って戻す */
+const REEL = featured.length > 0 ? [...featured, featured[0]] : []
 
 /* 決定的なゆらぎ。index から生成するので、再描画しても値は変わらない。
    乱数だと状態が更新されるたびに配置が飛ぶ */
@@ -149,76 +69,11 @@ const shuffleFloats = () => {
   return items.map((item, i) => ({ ...item, ...FLOAT_SLOTS[i] }))
 }
 
-const tokyoTime = () =>
-  new Intl.DateTimeFormat('ja-JP', {
-    timeZone: 'Asia/Tokyo',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(new Date())
-
-const fmtDate = value => {
-  const d = new Date(value)
-  return Number.isNaN(d.getTime())
-    ? String(value)
-    : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
-}
-
-const brandColor = item =>
-  item.icon && !DARK_ICON_SLUGS.has(item.icon.slug) ? `#${item.icon.hex}` : 'var(--paper)'
-
-/* 罫線。border ではなく要素にすることで、引かれる向きと順番を制御できる */
-const VLine = () => <span className="vline" aria-hidden="true" />
-const HLine = () => <span className="hline" aria-hidden="true" />
-
-function StackIcon({ item }) {
-  if (item.Icon) {
-    const { Icon } = item
-    return <Icon size={19} strokeWidth={1.6} aria-hidden="true" />
-  }
-  return (
-    <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true">
-      <path d={item.icon.path} />
-    </svg>
-  )
-}
-
-function Module({ tag, meta, className = '', order, children }) {
-  return (
-    <section className={`mod ${className}`} style={{ '--i': order }}>
-      <VLine />
-      <header className="mod-head">
-        <span className="mod-tag">{tag}</span>
-        {meta && <span className="mod-meta">{meta}</span>}
-      </header>
-      {children}
-    </section>
-  )
-}
-
-function WorkItem({ work }) {
-  const inner = (
-    <>
-      <span className="work-name">{work.name}</span>
-      <ArrowUpRight className="work-arrow" size={15} />
-      <span className="work-note">{work.note}</span>
-    </>
-  )
-  return work.href ? (
-    <a className="work" href={work.href} target="_blank" rel="noopener noreferrer">
-      {inner}
-    </a>
-  ) : (
-    <Link className="work" to={work.to}>
-      {inner}
-    </Link>
-  )
-}
-
 function App() {
-  const [clock, setClock] = useState(tokyoTime)
   const [shot, setShot] = useState(0)
+  const [slide, setSlide] = useState(0)
+  const [snapReel, setSnapReel] = useState(false)
+  const [holdReel, setHoldReel] = useState(false)
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
   const [hoverItem, setHoverItem] = useState(null)
@@ -226,16 +81,42 @@ function App() {
   const activeCat = hoverCat ?? pinCat
 
   useEffect(() => {
-    const id = setInterval(() => setClock(tokyoTime()), 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  useEffect(() => {
     const id = setInterval(() => setShot(i => (i + 1) % PHOTOS.length), 4600)
     return () => clearInterval(id)
   }, [])
 
+  /* 制作物の送り。Gallery と同期して見えないよう間隔をずらしてある。
+     指している間は止める。コマが替わった先を誤って押さないため。
+     複製の位置（= featured.length）まで進めてよく、戻しは遷移の終わりで行う */
+  useEffect(() => {
+    if (holdReel || featured.length < 2) return
+    /* 複製に着いた時点で戻しが走っているのが通常。上限で丸めているのは、
+       遷移が潰される環境で戻しが働かなかったときに空へ送らないための保険 */
+    const id = setInterval(() => setSlide(i => (i >= featured.length ? 0 : i + 1)), 5200)
+    return () => clearInterval(id)
+  }, [holdReel])
+
+  /* 複製に着いたら、遷移を切ってから先頭へ飛ばす。
+     切り替えを 2 フレーム待つのは、位置の書き換えが遷移として拾われないようにするため */
+  useEffect(() => {
+    if (!snapReel) return
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setSnapReel(false)))
+    return () => cancelAnimationFrame(id)
+  }, [snapReel])
+
   const latest = posts.slice(0, 2)
+
+  /* 複製の上に居るときは、実体としては先頭を指している */
+  const active = featured.length > 0 ? slide % featured.length : 0
+
+  /* 送り切ったところで遷移を切り、先頭へ黙って戻す。これで送りは常に右方向のまま。
+     子の transition（画像のフィルタなど）が上がってくるので、帯自身の位置変化だけを拾う */
+  const endReel = e => {
+    if (e.target !== e.currentTarget || e.propertyName !== 'transform') return
+    if (slide !== featured.length) return
+    setSnapReel(true)
+    setSlide(0)
+  }
 
   /* アイコンだけでは名前が読めないため、指したものを下段に表示する */
   const readout =
@@ -243,15 +124,7 @@ function App() {
     (activeCat ? STACK.find(g => g.key === activeCat).label : `${STACK_FLAT.length} items`)
 
   return (
-    <div className="board">
-      {/* 左端の銘板。ページ全体の縁を締める */}
-      <aside className="rail" aria-hidden="true">
-        <VLine />
-        <span className="rail-clock">{clock}</span>
-        <span className="rail-text">PORTFOLIO — KOS.N — 2026</span>
-      </aside>
-
-      <main className="board-main">
+    <main className="board-main">
         <div className="row row--a">
           <HLine />
 
@@ -380,18 +253,70 @@ function App() {
           </Module>
 
           {/* ── WORKS ── */}
-          <Module tag="Works" meta={`${WORKS.length} items`} className="works" order={3}>
-            <ul className="work-list">
-              {WORKS.map(w => (
-                <li key={w.name}>
-                  <WorkItem work={w} />
-                </li>
-              ))}
-            </ul>
-            <Link className="more" to="/works">
-              ほかの制作物
-              <span className="more-note">準備中</span>
-            </Link>
+          <Module
+            tag="Featured"
+            meta={featured.length > 0 ? `${active + 1} / ${featured.length}` : undefined}
+            className="works"
+            order={3}
+          >
+            {featured.length > 0 ? (
+              <>
+                {/* 表紙を 1 コマずつ横に送る。指している間は送りを止める */}
+                <div
+                  className="reel"
+                  onMouseEnter={() => setHoldReel(true)}
+                  onMouseLeave={() => setHoldReel(false)}
+                >
+                  <ul
+                    className="reel-track"
+                    style={{ '--slide': slide }}
+                    data-snap={snapReel || undefined}
+                    onTransitionEnd={endReel}
+                  >
+                    {REEL.map((w, i) => {
+                      const shown = i === slide
+                      return (
+                        <li
+                          className="reel-slide"
+                          key={`${w.slug}-${i}`}
+                          aria-hidden={!shown || undefined}
+                        >
+                          <Link
+                            className="reel-link"
+                            to={`/works/${w.slug}`}
+                            tabIndex={shown && i < featured.length ? undefined : -1}
+                          >
+                            {w.thumbnail ? (
+                              <img src={w.thumbnail} alt="" />
+                            ) : (
+                              <span className="reel-blank">
+                                <ImageOff size={18} strokeWidth={1.5} aria-hidden="true" />
+                              </span>
+                            )}
+                            <span className="reel-cap">{w.title}</span>
+                          </Link>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+
+                <div className="reel-ticks">
+                  {featured.map((w, i) => (
+                    <button
+                      key={`tick-${w.slug}`}
+                      type="button"
+                      className="tick"
+                      data-on={i === active || undefined}
+                      aria-label={`${i + 1} 件目 — ${w.title}`}
+                      onClick={() => setSlide(i)}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="empty">まだ制作物はありません</p>
+            )}
           </Module>
 
           {/* ── LOG ── */}
@@ -405,51 +330,29 @@ function App() {
               <ul className="entries">
                 {latest.map(p => (
                   <li key={p.slug}>
-                    <Link className="entry" to={`/blog/${p.slug}`}>
-                      <span className="entry-date">{fmtDate(p.date)}</span>
-                      <span className="entry-title">{p.title}</span>
-                      {p.excerpt && <span className="entry-text">{p.excerpt}</span>}
-                    </Link>
+                    <EntryItem
+                      to={`/blog/${p.slug}`}
+                      stamp={fmtDate(p.date)}
+                      title={p.title}
+                      text={p.excerpt}
+                    />
                   </li>
                 ))}
               </ul>
             ) : (
               <p className="empty">まだ記事はありません</p>
             )}
+
+            <Link className="more" to="/blog">
+              全ての記事を見る
+              <ArrowUpRight size={15} />
+            </Link>
           </Module>
         </div>
 
-        {/* ── INDEX ── */}
-        <nav className="index-nav" style={{ '--i': 5 }}>
-          {INDEX_LINKS.map(l => {
-            const Arrow = l.Icon ?? ArrowUpRight
-            const inner = (
-              <>
-                <VLine />
-                <span className="index-label">{l.label}</span>
-                {l.note && <span className="index-note">{l.note}</span>}
-                <Arrow className="index-arrow" size={16} />
-              </>
-            )
-            return l.href ? (
-              <a
-                key={l.label}
-                className="index-item"
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {inner}
-              </a>
-            ) : (
-              <Link key={l.label} className="index-item" to={l.to}>
-                {inner}
-              </Link>
-            )
-          })}
-        </nav>
-      </main>
-    </div>
+      {/* ── INDEX ── */}
+      <IndexNav />
+    </main>
   )
 }
 
