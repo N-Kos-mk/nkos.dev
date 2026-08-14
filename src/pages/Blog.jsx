@@ -125,36 +125,39 @@ export default function Blog() {
           {posts.length > 0 && <p className="readout">latest {fmtDate(posts[0].date)}</p>}
         </Module>
 
-        <Module tag="Archive" meta="by month" order={2}>
-          <ul className="bl-years">
-            {ARCHIVE.map(y => (
-              <li key={y.year}>
-                <div className="bl-year-row">
-                  <span className="bl-year">{y.year}</span>
-                  <span className="bl-year-n">{y.total}</span>
-                </div>
+        <Module tag="Archive" meta="by month" className="bl-archive" order={2}>
+          {/* 一覧を下まで送っても目盛りが残るよう、この面だけ別に留めて畳む */}
+          <div className="bl-archive-inner">
+            <ul className="bl-years">
+              {ARCHIVE.map(y => (
+                <li key={y.year}>
+                  <div className="bl-year-row">
+                    <span className="bl-year">{y.year}</span>
+                    <span className="bl-year-n">{y.total}</span>
+                  </div>
 
-                {y.months.length > 0 && (
-                  <ul className="bl-months">
-                    {y.months.map(([month, n]) => (
-                      <li key={month}>
-                        <button
-                          type="button"
-                          className="bl-month"
-                          onClick={() => jumpToMonth(`${y.year}-${month}`)}
-                        >
-                          <span className="bl-month-label">{month}</span>
-                          <span className="bl-month-n">{n}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
+                  {y.months.length > 0 && (
+                    <ul className="bl-months">
+                      {y.months.map(([month, n]) => (
+                        <li key={month}>
+                          <button
+                            type="button"
+                            className="bl-month"
+                            onClick={() => jumpToMonth(`${y.year}-${month}`)}
+                          >
+                            <span className="bl-month-label">{month}</span>
+                            <span className="bl-month-n">{n}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
 
-          <p className="readout">{countLabel(posts.length)}</p>
+            <p className="readout">{countLabel(posts.length)}</p>
+          </div>
         </Module>
       </div>
     </PageFrame>
