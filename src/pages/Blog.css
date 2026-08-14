@@ -12,7 +12,7 @@
 /* ── 一覧 ──
    既定はブロック表示。行に落とした表示は data-mode='list' 側で組み替える */
 .bl-modes {
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
 
 .bl-modes .cat svg {
@@ -55,14 +55,14 @@
 .bl-list[data-mode='block'] .bl-entry {
   display: flex;
   flex-direction: column;
-  gap: 11px;
+  gap: 15px;
   height: 100%;
-  padding: 13px;
+  padding: 20px;
 }
 
 /* 面が点くので、行のときのような押し込みはしない */
 .bl-list[data-mode='block'] .bl-entry:hover {
-  padding-left: 13px;
+  padding-left: 20px;
 }
 
 .bl-list[data-mode='block'] .bl-arrow {
@@ -71,10 +71,10 @@
 
 .bl-entry {
   display: grid;
-  grid-template-columns: clamp(112px, 14vw, 168px) minmax(0, 1fr) auto;
-  gap: 0 18px;
+  grid-template-columns: clamp(128px, 15vw, 190px) minmax(0, 1fr) auto;
+  gap: 0 24px;
   align-items: start;
-  padding: 16px 0;
+  padding: 22px 0;
   transition: padding-left 0.25s;
 }
 
@@ -110,8 +110,20 @@
   min-width: 0;
 }
 
+/* 日付・見出し・抜粋の間も、行の余白に合わせて少しずつ開ける */
 .bl-entry .entry-title {
+  margin-top: 9px;
   font-size: 15.5px;
+}
+
+.bl-entry .entry-text {
+  margin-top: 8px;
+  line-height: 1.8;
+}
+
+/* 一覧と読み取り欄が触れ合わないよう、下にもひと呼吸置く */
+.bl-list + .readout {
+  padding-top: 18px;
 }
 
 .bl-arrow {
@@ -394,7 +406,9 @@
 
 @media (max-width: 560px) {
   .bl-entry {
-    grid-template-columns: 92px minmax(0, 1fr);
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 0 16px;
+    padding: 18px 0;
   }
 
   .bl-arrow {
