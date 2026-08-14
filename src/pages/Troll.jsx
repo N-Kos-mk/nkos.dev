@@ -84,20 +84,20 @@ export default function Troll() {
 
   if (clicked) {
     return (
-      <div className="troll-result">
-        <p className="result-emoji">🤡</p>
-        <h1 className="result-title">なんもないよ</h1>
-        <p className="result-sub">本当になんもないよ。<br />なんであのボタン頑張って押したの？</p>
-        <Link to="/" className="result-home">nkos.devへ</Link>
+      <div className="old-troll-result">
+        <p className="old-result-emoji">🤡</p>
+        <h1 className="old-result-title">なんもないよ</h1>
+        <p className="old-result-sub">本当になんもないよ。<br />なんであのボタン頑張って押したの？</p>
+        <Link to="/" className="old-result-home">nkos.devへ</Link>
       </div>
     )
   }
 
   return (
-    <div className="troll-wrapper">
+    <div className="old-troll-wrapper">
       <button
         ref={btnRef}
-        className="rainbow-btn"
+        className="old-rainbow-btn"
         style={{ left: posRef.current.x, top: posRef.current.y }}
         onClick={() => setClicked(true)}
       >

@@ -5,29 +5,29 @@ import Module from '../components/Module.jsx'
 import Prose from '../components/Prose.jsx'
 import EntryItem from '../components/EntryItem.jsx'
 import { HLine } from '../components/Rule.jsx'
-import { posts, getPost } from '../lib/blog.js'
+import { works, getWork, serial } from '../lib/works.js'
 import { fmtDate } from '../lib/site.js'
-import './Blog.css'
+import './Works.css'
 
-export default function BlogPost() {
+export default function WorkPost() {
   const { slug } = useParams()
-  const post = getPost(slug)
+  const work = getWork(slug)
 
-  if (!post) {
+  if (!work) {
     return (
       <PageFrame
-        current="blog"
+        current="works"
         indexCurrent={null}
-        tag="Entry"
+        tag="Item"
         title="Not found"
         meta="404"
-        lead="記事が見つかりませんでした。"
+        lead="制作物が見つかりませんでした。"
       >
         <div className="p-row">
           <HLine />
-          <Module tag="Index" meta="blog" order={1}>
-            <Link className="more" to="/blog">
-              Blog 一覧へ
+          <Module tag="Index" meta="works" order={1}>
+            <Link className="more" to="/works">
+              Works 一覧へ
               <ArrowUpRight size={15} />
             </Link>
           </Module>
@@ -36,52 +36,56 @@ export default function BlogPost() {
     )
   }
 
-  const { Component } = post
-  /* 記事の下に置く行き先。いま読んでいるものは外す */
-  const others = posts.filter(p => p.slug !== post.slug).slice(0, 3)
+  const { Component } = work
+  const no = serial(works.findIndex(w => w.slug === work.slug))
+  /* 台帳の隣に置く行き先。いま開いているものは外す */
+  const others = works
+    .map((w, i) => ({ ...w, no: serial(i) }))
+    .filter(w => w.slug !== work.slug)
+    .slice(0, 3)
 
   return (
     <PageFrame
-      current="blog"
+      current="works"
       indexCurrent={null}
-      tag="Entry"
-      title={post.title}
+      tag="Item"
+      title={work.title}
       jpTitle
-      meta={fmtDate(post.date)}
-      lead={post.excerpt}
+      meta={`${no} — ${fmtDate(work.date)}`}
+      lead={work.excerpt}
     >
       <div className="p-row p-row--aside">
         <HLine />
 
-        <Module tag="Text" meta={post.slug} order={1}>
+        <Module tag="Detail" meta={work.slug} order={1}>
           <Prose>
             <Component />
           </Prose>
 
           {/* 読み終わりの行き先。面が伸びても下端に着く */}
-          <Link className="more" to="/blog">
-            Blog 一覧へ
+          <Link className="more" to="/works">
+            Works 一覧へ
             <ArrowUpRight size={15} />
           </Link>
         </Module>
 
-        <Module tag="Index" className="bl-side" meta="blog" order={2}>
-          <Link className="bl-side-back" to="/blog">
+        <Module tag="Index" className="wk-side" meta="works" order={2}>
+          <Link className="wk-side-back" to="/works">
             <ArrowUpRight size={15} />
-            Blog 一覧へ
+            Works 一覧へ
           </Link>
 
           {others.length > 0 && (
             <ul className="entries">
-              {others.map(p => (
-                <li key={p.slug}>
-                  <EntryItem to={`/blog/${p.slug}`} stamp={fmtDate(p.date)} title={p.title} />
+              {others.map(w => (
+                <li key={w.slug}>
+                  <EntryItem to={`/works/${w.slug}`} stamp={w.no} title={w.title} />
                 </li>
               ))}
             </ul>
           )}
 
-          <p className="readout">{fmtDate(post.date)}</p>
+          <p className="readout">{no}</p>
         </Module>
       </div>
     </PageFrame>

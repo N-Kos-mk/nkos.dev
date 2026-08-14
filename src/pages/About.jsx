@@ -1,194 +1,146 @@
-import { ArrowLeft, Mail, ExternalLink, GraduationCap, Calendar, MapPin, Home, Code2, AppWindow, Bot } from 'lucide-react'
 import {
-  siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
-  siReact, siVite, siNodedotjs, siFastapi,
-  siMysql, siPostgresql, siSqlite,
-  siGit, siGithub, siLinux, siCloudflare, siCloudflareworkers, siVercel,
-} from 'simple-icons/icons'
+  ExternalLink, Mail, GraduationCap, Calendar, MapPin, Home, Gamepad2, Wrench, Camera,
+} from 'lucide-react'
+import PageFrame from '../components/PageFrame.jsx'
+import Module from '../components/Module.jsx'
+import StackIcon from '../components/StackIcon.jsx'
+import { HLine } from '../components/Rule.jsx'
+import { STACK_COUNT, brandColor } from '../lib/stack.js'
+import { STACK } from '../data/stack.js'
+import { GITHUB } from '../lib/site.js'
 import './About.css'
 
 const age = new Date().getFullYear() - 2002
 
 const FACTS = [
   { Icon: GraduationCap, text: '電気通信大学 大学院 情報学専攻 / 修士 2 年' },
-  { Icon: Calendar,      text: `今年で ${age} 歳` },
-  { Icon: MapPin,        text: '京都府生まれ 静岡県育ち' },
-  { Icon: Home,          text: '東京都在住' },
+  { Icon: Calendar, text: `今年で ${age} 歳` },
+  { Icon: MapPin, text: '京都府生まれ 静岡県育ち' },
+  { Icon: Home, text: '東京都在住' },
 ]
 
-// GitHub のブランドカラーはダーク背景で視認しづらいため、代わりに --text-h で描画する
-const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
+/* 盤面では絵文字を使わないため、線のアイコンに置き換えている */
+const INTERESTS = [
+  { Icon: Gamepad2, label: 'ゲーム' },
+  { Icon: Wrench, label: '個人開発' },
+]
 
-function SkillIcon({ item, size = 16 }) {
-  if (item.Icon) {
-    const { Icon } = item
-    return <Icon size={size} color="var(--text-h)" strokeWidth={1.8} style={{ flexShrink: 0 }} />
-  }
-  const { icon } = item
-  const color = DARK_ICON_SLUGS.has(icon.slug) ? 'var(--text-h)' : `#${icon.hex}`
+/* 写真は未投入。枠だけ先に据えて、入ったときに面が動かないようにしておく */
+function PhotoSlot() {
   return (
-    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill={color} style={{ flexShrink: 0 }}>
-      <path d={icon.path} />
-    </svg>
+    <figure className="ab-shot">
+      <div className="ab-shot-body">
+        <Camera size={18} strokeWidth={1.5} aria-hidden="true" />
+      </div>
+      <figcaption>Photo placeholder</figcaption>
+    </figure>
   )
 }
 
-const SKILL_GROUPS = [
-  {
-    title: '言語',
-    items: [
-      { name: 'HTML', icon: siHtml5 },
-      { name: 'CSS', icon: siCss },
-      { name: 'JavaScript', icon: siJavascript },
-      { name: 'TypeScript', icon: siTypescript },
-      { name: 'Python', icon: siPython },
-      { name: 'PHP', icon: siPhp },
-    ],
-  },
-  {
-    title: 'フレームワーク・ライブラリ',
-    items: [
-      { name: 'React', icon: siReact },
-      { name: 'Vite', icon: siVite },
-      { name: 'Node.js', icon: siNodedotjs },
-      { name: 'FastAPI', icon: siFastapi },
-    ],
-  },
-  {
-    title: 'データベース',
-    items: [
-      { name: 'MySQL', icon: siMysql },
-      { name: 'PostgreSQL', icon: siPostgresql },
-      { name: 'SQLite', icon: siSqlite },
-    ],
-  },
-  {
-    title: 'インフラ・ツール',
-    items: [
-      { name: 'Git', icon: siGit },
-      { name: 'GitHub', icon: siGithub },
-      { name: 'VS Code', Icon: Code2 },
-      { name: 'Linux', icon: siLinux },
-      { name: 'Windows', Icon: AppWindow },
-      { name: 'Cloudflare', icon: siCloudflare },
-      { name: 'Workers', icon: siCloudflareworkers },
-      { name: 'Vercel', icon: siVercel },
-    ],
-  },
-]
-
-const INTERESTS = [
-  { icon: '🎮', label: 'ゲーム' },
-  { icon: '🛠️', label: '個人開発' },
-]
-
-export default function About({ isOpen, onClose }) {
+export default function About() {
   return (
-    <div className={`about-panel${isOpen ? ' about-panel--open' : ''}`}>
+    <PageFrame
+      current="about"
+      tag="About"
+      title="Kos.N"
+      meta="he / him"
+      lead="Building things with code and curiosity."
+      figure={
+        <figure className="id-plate">
+          <img src="/images/avatar.png" alt="" />
+        </figure>
+      }
+    >
+      <div className="p-row p-row--split">
+        <HLine />
 
-      {/* sticky topbar */}
-      <div className="about-topbar">
-        <button className="about-back" onClick={onClose}>
-          <ArrowLeft size={16} />
-          Back to home
-        </button>
-      </div>
-
-      <article className="about-content">
-
-        {/* Hero */}
-        <section className="about-hero">
-          <img src="/images/avatar.png" alt="avatar" className="about-avatar" />
-          <h1 className="about-name">Kos.N</h1>
-          <p className="about-role">he / him</p>
-          <p className="about-tagline">Building things with code and curiosity.</p>
-        </section>
-
-        {/* Bio */}
-        <section className="about-section">
-          <h2 className="about-section-title">Bio</h2>
-          <p className="about-bio">
+        <Module tag="Bio" meta="profile" order={1}>
+          <p className="ab-bio">
             ゲームと個人開発が趣味です。デザインの定量評価に関する研究をしており、
             その前は数年間生物分野にてタンパク質をこねこねしていました。
             このサイトはモチベーションに応じて日々更新中。
           </p>
-          <ul className="about-facts">
+
+          <ul className="ab-facts">
             {FACTS.map(({ Icon, text }) => (
               <li key={text}>
-                <Icon size={15} className="fact-icon" />
+                <span className="fact-mark">
+                  <Icon size={12} strokeWidth={1.8} />
+                </span>
                 <span>{text}</span>
               </li>
             ))}
           </ul>
-          <div className="dummy-photo"><span>📷 Photo placeholder</span></div>
-        </section>
+        </Module>
 
-        {/* Skills */}
-        <section className="about-section">
-          <h2 className="about-section-title">Skills</h2>
+        <Module tag="Photo" meta="pending" className="ab-photo" order={2}>
+          <PhotoSlot />
+        </Module>
+      </div>
 
-          {SKILL_GROUPS.map(group => (
-            <div key={group.title} className="skill-block">
-              <h3 className="skill-block-title">{group.title}</h3>
-              <div className="skill-chips">
-                {group.items.map(item => (
-                  <span key={item.name} className="skill-chip">
-                    <SkillIcon item={item} />
-                    {item.name}
-                  </span>
-                ))}
+      <div className="p-row">
+        <HLine />
+
+        <Module tag="Skills" meta={`${STACK_COUNT} items`} order={3}>
+          <div className="sk-groups">
+            {STACK.map(g => (
+              <div className="sk-group" key={g.key}>
+                <span className="sk-group-name">{g.title}</span>
+                <ul className="sk-items">
+                  {g.items.map(item => (
+                    <li className="sk-item" key={item.name} style={{ '--brand': brandColor(item) }}>
+                      <span className="sk-mark">
+                        <StackIcon item={item} size={15} />
+                      </span>
+                      <span className="sk-name">{item.name}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           <a
-            href="https://github.com/N-Kos-mk"
+            className="more"
+            href={GITHUB}
             target="_blank"
             rel="noopener noreferrer"
-            className="skill-more-link"
           >
             詳細(GitHub)
             <ExternalLink size={14} />
           </a>
-        </section>
+        </Module>
+      </div>
 
-        {/* Interests */}
-        <section className="about-section">
-          <h2 className="about-section-title">趣味・興味</h2>
-          <div className="interests-grid">
-            {INTERESTS.map(item => (
-              <div key={item.label} className="interest-item">
-                <span>{item.icon}</span>
-                <span>{item.label}</span>
-              </div>
+      <div className="p-row p-row--half">
+        <HLine />
+
+        <Module tag="Interests" meta={`${INTERESTS.length} items`} order={4}>
+          <ul className="int-list">
+            {INTERESTS.map(({ Icon, label }) => (
+              <li key={label}>
+                <span className="fact-mark">
+                  <Icon size={12} strokeWidth={1.8} />
+                </span>
+                <span>{label}</span>
+              </li>
             ))}
-          </div>
-          <div className="dummy-photo"><span>📷 Photo placeholder</span></div>
-        </section>
-
-        {/* Works — 非表示（コンテンツ追加後に解除） */}
-        {/* <section className="about-section">
-          <h2 className="about-section-title">Works</h2>
-        </section> */}
-
-        {/* Contact */}
-        <section className="about-section">
-          <h2 className="about-section-title">Contact</h2>
-          <ul className="contact-list">
-            <li>
-              <Mail size={16} />
-              <span className="contact-pending">（準備中...）</span>
-            </li>
-            {/*<li>
-              <ExternalLink size={16} />
-              <a href="https://github.com/N-Kos-mk" target="_blank" rel="noopener noreferrer">
-                GitHub
-              </a>
-            </li>*/}
           </ul>
-        </section>
+          <PhotoSlot />
+        </Module>
 
-      </article>
-    </div>
+        <Module tag="Contact" meta="pending" order={5}>
+          <ul className="ct-list">
+            <li>
+              <span className="fact-mark">
+                <Mail size={12} strokeWidth={1.8} />
+              </span>
+              <span className="ct-pending">（準備中...）</span>
+            </li>
+          </ul>
+          <p className="readout">pending</p>
+        </Module>
+      </div>
+    </PageFrame>
   )
 }
