@@ -4,7 +4,21 @@
    角丸・影は使わず、有彩色は真鍮のみ。
    ============================================================ */
 
-/* ── 一覧 ── */
+/* 一覧は脇の索引より本文を優先する。索引は年月の目盛りだけなので細くてよい */
+.p-row.bl-row {
+  grid-template-columns: minmax(0, 1fr) clamp(190px, 18vw, 236px);
+}
+
+/* ── 一覧 ──
+   既定はブロック表示。行に落とした表示は data-mode='list' 側で組み替える */
+.bl-modes {
+  margin-bottom: 12px;
+}
+
+.bl-modes .cat svg {
+  flex-shrink: 0;
+}
+
 .bl-list {
   margin: 0;
   padding: 0;
@@ -13,7 +27,46 @@
 }
 
 .bl-list li {
+  /* 月から飛んできたとき、上部の帯に見出しが隠れないようにする */
+  scroll-margin-top: 62px;
   border-bottom: 1px solid var(--line-soft);
+}
+
+/* ── ブロック表示 ──
+   隙間そのものを罫線色で塗り、1px の格子として見せる */
+.bl-list[data-mode='block'] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 1px;
+  background: var(--line-soft);
+  border: 1px solid var(--line-soft);
+}
+
+.bl-list[data-mode='block'] li {
+  background: var(--ink);
+  border-bottom: 0;
+  transition: background 0.3s;
+}
+
+.bl-list[data-mode='block'] li:hover {
+  background: rgba(210, 168, 87, 0.07);
+}
+
+.bl-list[data-mode='block'] .bl-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  height: 100%;
+  padding: 13px;
+}
+
+/* 面が点くので、行のときのような押し込みはしない */
+.bl-list[data-mode='block'] .bl-entry:hover {
+  padding-left: 13px;
+}
+
+.bl-list[data-mode='block'] .bl-arrow {
+  display: none;
 }
 
 .bl-entry {
@@ -73,7 +126,8 @@
   transform: translate(3px, -3px);
 }
 
-/* ── 年別の件数 ── */
+/* ── 年月の目盛り ──
+   年で区切り、その内側に月をひと段下げて並べる */
 .bl-years {
   margin: 0;
   padding: 0;
@@ -81,12 +135,15 @@
   border-top: 1px solid var(--line-soft);
 }
 
-.bl-years li {
+.bl-years > li {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.bl-year-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--line-soft);
+  padding: 11px 0 8px;
 }
 
 .bl-year {
@@ -97,6 +154,50 @@
 }
 
 .bl-year-n {
+  font: 400 10.5px var(--display);
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+
+/* 段差は余白ではなく縦罫で示す */
+.bl-months {
+  margin: 0 0 8px;
+  padding: 0 0 0 13px;
+  list-style: none;
+}
+
+.bl-month {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 0 7px 11px;
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--line-soft);
+  cursor: pointer;
+  transition: padding-left 0.25s, border-color 0.25s;
+}
+
+.bl-month:hover {
+  padding-left: 15px;
+  border-left-color: var(--brass);
+}
+
+.bl-month-label {
+  font: 500 11.5px var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  transition: color 0.25s;
+}
+
+.bl-month:hover .bl-month-label {
+  color: var(--paper);
+}
+
+.bl-month-n {
   font: 400 10.5px var(--display);
   letter-spacing: 0.14em;
   color: var(--dim);
@@ -259,6 +360,13 @@
   filter: none;
 }
 
+/* 縦積みに切り替わったら、一覧と索引の列分けも解く */
+@media (max-width: 1000px) {
+  .p-row.bl-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 560px) {
   .bl-entry {
     grid-template-columns: 92px minmax(0, 1fr);
@@ -266,5 +374,9 @@
 
   .bl-arrow {
     display: none;
+  }
+
+  .bl-list[data-mode='block'] {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }

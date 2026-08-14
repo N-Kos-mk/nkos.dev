@@ -16,7 +16,7 @@ import './App.css'
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
 
 const ID_FACTS = [
-  { Icon: MapPin, text: '東京都' },
+  { Icon: MapPin, text: 'Tokyo, Japan' },
   { Icon: GraduationCap, text: 'The University of Electro-Communications' },
 ]
 

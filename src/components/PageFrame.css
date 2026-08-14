@@ -70,12 +70,14 @@
   color: var(--brass);
 }
 
-/* 銘板の打点。帯の左端を締めるためだけの 5px の正方形 */
+/* 銘板の打点。帯の左端を締める 5px の正方形。
+   通電している計器の標識として、不定期に明滅させる */
 .p-brand-mark {
   width: 5px;
   height: 5px;
   background: var(--brass);
   transition: background 0.25s;
+  animation: beacon 8.3s 900ms steps(1, end) infinite backwards;
 }
 
 .p-brand:hover .p-brand-mark {
@@ -209,6 +211,46 @@
 
 .p-row .mod > *:not(.mod-head):not(.vline) {
   animation-delay: calc(620ms + var(--i, 0) * 45ms);
+}
+
+/* ── Animations ──
+   打点の明滅。等間隔だと機械の点滅に見えるため、間隔を揃えずに散らしてある */
+@keyframes beacon {
+  0%,
+  10.8% {
+    opacity: 1;
+  }
+  11% {
+    opacity: 0.12;
+  }
+  12.4% {
+    opacity: 1;
+  }
+  13.2% {
+    opacity: 0.12;
+  }
+  14% {
+    opacity: 1;
+  }
+  46% {
+    opacity: 0.12;
+  }
+  46.9% {
+    opacity: 1;
+  }
+  71% {
+    opacity: 0.12;
+  }
+  71.8% {
+    opacity: 1;
+  }
+  72.6% {
+    opacity: 0.12;
+  }
+  73.6%,
+  100% {
+    opacity: 1;
+  }
 }
 
 /* ── Responsive ──
