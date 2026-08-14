@@ -36,7 +36,7 @@
    隙間そのものを罫線色で塗り、1px の格子として見せる */
 .bl-list[data-mode='block'] {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1px;
   background: var(--line-soft);
   border: 1px solid var(--line-soft);
@@ -128,6 +128,24 @@
 
 /* ── 年月の目盛り ──
    年で区切り、その内側に月をひと段下げて並べる */
+
+/* 面は列の高さいっぱいのまま、中身だけを留めて一覧と別にスクロールさせる。
+   一覧を下まで送っても目盛りが視界から外れない */
+.bl-archive-inner {
+  position: sticky;
+  top: 62px;
+  max-height: calc(100dvh - 86px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+/* 面の下端ではなく、目盛りの直下に着ける */
+.bl-archive-inner .readout {
+  margin-top: 0;
+}
+
 .bl-years {
   margin: 0;
   padding: 0;
@@ -365,6 +383,13 @@
   .p-row.bl-row {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  /* 縦積みでは目盛りが一覧の下に回るため、留める意味がなくなる */
+  .bl-archive-inner {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
 }
 
 @media (max-width: 560px) {
@@ -377,6 +402,6 @@
   }
 
   .bl-list[data-mode='block'] {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 }
