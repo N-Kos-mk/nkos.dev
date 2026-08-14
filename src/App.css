@@ -456,6 +456,11 @@
   transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* 複製から先頭へ戻す一瞬だけ、遷移を切って位置だけを差し替える */
+.reel-track[data-snap] {
+  transition: none;
+}
+
 .reel-slide {
   flex: 0 0 100%;
   min-width: 0;
