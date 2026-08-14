@@ -1,0 +1,30 @@
+/* ============================================================
+   Works — 制作物の一覧と、まだ準備中であることの表示
+   ============================================================ */
+
+.wk-eyebrow {
+  font: 600 clamp(17px, 2vw, 22px) var(--display);
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+/* 小ネタも直に置かず、盤面の語彙どおり枠に収める */
+.wk-sushi {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: clamp(20px, 3vw, 34px) 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.wk-sushi-cap {
+  font: 400 10.5px var(--display);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}

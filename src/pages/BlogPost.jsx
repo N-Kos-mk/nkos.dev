@@ -1,80 +1,86 @@
-import { useRef, useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import { getPost } from '../lib/blog.js'
+import { ArrowUpRight } from 'lucide-react'
+import PageFrame from '../components/PageFrame.jsx'
+import Module from '../components/Module.jsx'
+import { HLine } from '../components/Rule.jsx'
+import { posts, getPost } from '../lib/blog.js'
+import { fmtDate } from '../lib/site.js'
 import './Blog.css'
 
 export default function BlogPost() {
   const { slug } = useParams()
   const post = getPost(slug)
-  const backRef = useRef(null)
-  const [sticky, setSticky] = useState(false)
-
-  useEffect(() => {
-    const el = backRef.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => setSticky(!entry.isIntersecting),
-      { threshold: 0 }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
 
   if (!post) {
     return (
-      <div className="old-blog-page">
-        <div className="old-blog-inner">
-          <Link to="/blog" className="old-blog-back"><ArrowLeft size={14} /> Blog</Link>
-          <p className="old-blog-not-found">記事が見つかりませんでした。</p>
+      <PageFrame
+        current="blog"
+        navExclude="github"
+        tag="Entry"
+        title="Not found"
+        meta="404"
+        lead="記事が見つかりませんでした。"
+        railText="ENTRY — KOS.N — 2026"
+      >
+        <div className="p-row">
+          <HLine />
+          <Module tag="Index" meta="blog" order={1}>
+            <Link className="more" to="/blog">
+              Blog 一覧へ
+              <ArrowUpRight size={15} />
+            </Link>
+          </Module>
         </div>
-      </div>
+      </PageFrame>
     )
   }
 
   const { Component } = post
+  /* 記事の下に置く行き先。いま読んでいるものは外す */
+  const others = posts.filter(p => p.slug !== post.slug).slice(0, 3)
 
   return (
-    <>
-      {/* スクロール時に現れるミニバー */}
-      <div className={`old-blog-sticky${sticky ? ' old-blog-sticky--visible' : ''}`}>
-        <Link to="/blog" className="old-blog-back">
-          <ArrowLeft size={14} /> Blog
-        </Link>
-        <span className="old-blog-sticky-title">{post.title}</span>
-      </div>
+    <PageFrame
+      current="blog"
+      navExclude="github"
+      tag="Entry"
+      title={post.title}
+      jpTitle
+      meta={fmtDate(post.date)}
+      lead={post.excerpt}
+      railText="ENTRY — KOS.N — 2026"
+    >
+      <div className="p-row p-row--aside">
+        <HLine />
 
-      <div className="old-blog-page">
-        <div className="bg-orbs" aria-hidden="true">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-        </div>
-
-        <div className="old-blog-inner">
-          <Link to="/blog" className="old-blog-back" ref={backRef}>
-            <ArrowLeft size={14} />
-            Blog
-          </Link>
-
-          <article className="old-post">
-            <header className="old-post-header">
-              <time className="old-post-date">{post.date}</time>
-              <h1 className="old-post-title">{post.title}</h1>
-              {post.excerpt && (
-                <p className="old-post-excerpt">{post.excerpt}</p>
-              )}
-            </header>
-            <div className="old-prose">
-              <Component />
-            </div>
+        <Module tag="Text" meta={post.slug} order={1}>
+          <article className="prose">
+            <Component />
           </article>
+        </Module>
 
-          <Link to="/blog" className="old-post-footer-back">
-            <ArrowLeft size={14} />
+        <Module tag="Index" className="bl-side" meta="blog" order={2}>
+          <Link className="bl-side-back" to="/blog">
+            <ArrowUpRight size={15} />
             Blog 一覧へ
           </Link>
-        </div>
+
+          {others.length > 0 && (
+            <ul className="entries">
+              {others.map(p => (
+                <li key={p.slug}>
+                  <Link className="entry" to={`/blog/${p.slug}`}>
+                    <span className="entry-date">{fmtDate(p.date)}</span>
+                    <span className="entry-title">{p.title}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <p className="readout">{fmtDate(post.date)}</p>
+        </Module>
       </div>
-    </>
+    </PageFrame>
   )
 }

@@ -1,22 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, ExternalLink, Code2, AppWindow, MapPin, GraduationCap } from 'lucide-react'
-import {
-  siHtml5, siCss, siJavascript, siTypescript, siPython, siPhp,
-  siReact, siVite, siNodedotjs, siFastapi,
-  siMysql, siPostgresql, siSqlite,
-  siGit, siGithub, siLinux, siCloudflare, siCloudflareworkers, siVercel,
-} from 'simple-icons/icons'
+import { MapPin, GraduationCap } from 'lucide-react'
 import { posts } from './lib/blog.js'
+import { fmtDate, navFor } from './lib/site.js'
+import { STACK, STACK_FLAT, brandColor } from './lib/stack.js'
+import { WORKS } from './lib/works.js'
+import Rail from './components/Rail.jsx'
+import Module from './components/Module.jsx'
+import StackIcon from './components/StackIcon.jsx'
+import WorkItem from './components/WorkItem.jsx'
+import IndexNav from './components/IndexNav.jsx'
+import { HLine } from './components/Rule.jsx'
 import './App.css'
 
 /* 旧デザインのページ側は old- 接頭辞で隔離してあるため、こちらは接頭辞なし */
-
-const GITHUB = 'https://github.com/N-Kos-mk'
-const REPO = 'https://github.com/n-kos-mk/nkos.dev'
-
-/* ブランドカラーが黒に近く、暗い背景で沈むアイコンは白で描く */
-const DARK_ICON_SLUGS = new Set(['github', 'vercel'])
 
 const ID_FACTS = [
   { Icon: MapPin, text: '東京都' },
@@ -29,76 +26,6 @@ const PHOTOS = [
   { src: '/images/avatar.png', place: '東京都', note: 'dummy', pos: 'center 28%' },
   { src: '/images/avatar.png', place: '静岡県', note: 'dummy', pos: 'center 55%' },
   { src: '/images/avatar.png', place: '京都府', note: 'dummy', pos: 'center 82%' },
-]
-
-const WORKS = [
-  {
-    name: 'nkos.dev',
-    note: 'このサイト。React + Vite で組み、Cloudflare Pages に置いている',
-    href: REPO,
-  },
-  {
-    name: 'MDX ブログ基盤',
-    note: '記事を MDX で書き、React コンポーネントをそのまま埋め込める仕組み',
-    to: '/blog',
-  },
-]
-
-const STACK = [
-  {
-    key: 'lang',
-    label: '言語',
-    items: [
-      { name: 'HTML', icon: siHtml5 },
-      { name: 'CSS', icon: siCss },
-      { name: 'JavaScript', icon: siJavascript },
-      { name: 'TypeScript', icon: siTypescript },
-      { name: 'Python', icon: siPython },
-      { name: 'PHP', icon: siPhp },
-    ],
-  },
-  {
-    key: 'fw',
-    label: 'フレームワーク',
-    items: [
-      { name: 'React', icon: siReact },
-      { name: 'Vite', icon: siVite },
-      { name: 'Node.js', icon: siNodedotjs },
-      { name: 'FastAPI', icon: siFastapi },
-    ],
-  },
-  {
-    key: 'db',
-    label: 'データベース',
-    items: [
-      { name: 'MySQL', icon: siMysql },
-      { name: 'PostgreSQL', icon: siPostgresql },
-      { name: 'SQLite', icon: siSqlite },
-    ],
-  },
-  {
-    key: 'infra',
-    label: 'インフラ・ツール',
-    items: [
-      { name: 'Git', icon: siGit },
-      { name: 'GitHub', icon: siGithub },
-      { name: 'VS Code', Icon: Code2 },
-      { name: 'Linux', icon: siLinux },
-      { name: 'Windows', Icon: AppWindow },
-      { name: 'Cloudflare', icon: siCloudflare },
-      { name: 'Workers', icon: siCloudflareworkers },
-      { name: 'Vercel', icon: siVercel },
-    ],
-  },
-]
-const STACK_FLAT = STACK.flatMap(g => g.items.map(item => ({ ...item, key: g.key })))
-
-const INDEX_LINKS = [
-  { label: 'About', note: '私について', to: '/about' },
-  { label: 'Blog', note: '書き残し', to: '/blog' },
-  { label: 'Works', note: 'プロジェクト等', to: '/works' },
-  /* 外部へ出るリンクなので、行き先を示すアイコンを変えている */
-  { label: 'GitHub', href: GITHUB, Icon: ExternalLink },
 ]
 
 /* 決定的なゆらぎ。index から生成するので、再描画しても値は変わらない。
@@ -149,86 +76,13 @@ const shuffleFloats = () => {
   return items.map((item, i) => ({ ...item, ...FLOAT_SLOTS[i] }))
 }
 
-const tokyoTime = () =>
-  new Intl.DateTimeFormat('ja-JP', {
-    timeZone: 'Asia/Tokyo',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(new Date())
-
-const fmtDate = value => {
-  const d = new Date(value)
-  return Number.isNaN(d.getTime())
-    ? String(value)
-    : `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
-}
-
-const brandColor = item =>
-  item.icon && !DARK_ICON_SLUGS.has(item.icon.slug) ? `#${item.icon.hex}` : 'var(--paper)'
-
-/* 罫線。border ではなく要素にすることで、引かれる向きと順番を制御できる */
-const VLine = () => <span className="vline" aria-hidden="true" />
-const HLine = () => <span className="hline" aria-hidden="true" />
-
-function StackIcon({ item }) {
-  if (item.Icon) {
-    const { Icon } = item
-    return <Icon size={19} strokeWidth={1.6} aria-hidden="true" />
-  }
-  return (
-    <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true">
-      <path d={item.icon.path} />
-    </svg>
-  )
-}
-
-function Module({ tag, meta, className = '', order, children }) {
-  return (
-    <section className={`mod ${className}`} style={{ '--i': order }}>
-      <VLine />
-      <header className="mod-head">
-        <span className="mod-tag">{tag}</span>
-        {meta && <span className="mod-meta">{meta}</span>}
-      </header>
-      {children}
-    </section>
-  )
-}
-
-function WorkItem({ work }) {
-  const inner = (
-    <>
-      <span className="work-name">{work.name}</span>
-      <ArrowUpRight className="work-arrow" size={15} />
-      <span className="work-note">{work.note}</span>
-    </>
-  )
-  return work.href ? (
-    <a className="work" href={work.href} target="_blank" rel="noopener noreferrer">
-      {inner}
-    </a>
-  ) : (
-    <Link className="work" to={work.to}>
-      {inner}
-    </Link>
-  )
-}
-
 function App() {
-  const [clock, setClock] = useState(tokyoTime)
   const [shot, setShot] = useState(0)
   const [hoverCat, setHoverCat] = useState(null)
   const [pinCat, setPinCat] = useState(null)
   const [hoverItem, setHoverItem] = useState(null)
   const [floats] = useState(shuffleFloats)
   const activeCat = hoverCat ?? pinCat
-
-  useEffect(() => {
-    const id = setInterval(() => setClock(tokyoTime()), 1000)
-    return () => clearInterval(id)
-  }, [])
 
   useEffect(() => {
     const id = setInterval(() => setShot(i => (i + 1) % PHOTOS.length), 4600)
@@ -245,11 +99,7 @@ function App() {
   return (
     <div className="board">
       {/* 左端の銘板。ページ全体の縁を締める */}
-      <aside className="rail" aria-hidden="true">
-        <VLine />
-        <span className="rail-clock">{clock}</span>
-        <span className="rail-text">PORTFOLIO — KOS.N — 2026</span>
-      </aside>
+      <Rail text="PORTFOLIO — KOS.N — 2026" />
 
       <main className="board-main">
         <div className="row row--a">
@@ -420,34 +270,7 @@ function App() {
         </div>
 
         {/* ── INDEX ── */}
-        <nav className="index-nav" style={{ '--i': 5 }}>
-          {INDEX_LINKS.map(l => {
-            const Arrow = l.Icon ?? ArrowUpRight
-            const inner = (
-              <>
-                <VLine />
-                <span className="index-label">{l.label}</span>
-                {l.note && <span className="index-note">{l.note}</span>}
-                <Arrow className="index-arrow" size={16} />
-              </>
-            )
-            return l.href ? (
-              <a
-                key={l.label}
-                className="index-item"
-                href={l.href}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {inner}
-              </a>
-            ) : (
-              <Link key={l.label} className="index-item" to={l.to}>
-                {inner}
-              </Link>
-            )
-          })}
-        </nav>
+        <IndexNav links={navFor('home')} />
       </main>
     </div>
   )
