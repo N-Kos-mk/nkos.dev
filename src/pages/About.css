@@ -134,12 +134,6 @@
   color: var(--paper);
 }
 
-/* App.css の .more は文字だけを想定しているため、矢印の位置だけ整える */
-.more svg {
-  align-self: center;
-  flex-shrink: 0;
-}
-
 @media (max-width: 560px) {
   .sk-group {
     grid-template-columns: minmax(0, 1fr);

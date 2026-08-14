@@ -15,7 +15,7 @@ export default function BlogPost() {
     return (
       <PageFrame
         current="blog"
-        navExclude="github"
+        indexCurrent={null}
         tag="Entry"
         title="Not found"
         meta="404"
@@ -42,7 +42,7 @@ export default function BlogPost() {
   return (
     <PageFrame
       current="blog"
-      navExclude="github"
+      indexCurrent={null}
       tag="Entry"
       title={post.title}
       jpTitle
@@ -57,6 +57,12 @@ export default function BlogPost() {
           <article className="prose">
             <Component />
           </article>
+
+          {/* 読み終わりの行き先。面が伸びても下端に着く */}
+          <Link className="more" to="/blog">
+            Blog 一覧へ
+            <ArrowUpRight size={15} />
+          </Link>
         </Module>
 
         <Module tag="Index" className="bl-side" meta="blog" order={2}>
