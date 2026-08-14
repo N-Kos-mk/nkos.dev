@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { ArrowUpRight } from 'lucide-react'
 import PageFrame from '../components/PageFrame.jsx'
 import Module from '../components/Module.jsx'
+import Prose from '../components/Prose.jsx'
 import { HLine } from '../components/Rule.jsx'
 import { posts, getPost } from '../lib/blog.js'
 import { fmtDate } from '../lib/site.js'
@@ -54,9 +55,9 @@ export default function BlogPost() {
         <HLine />
 
         <Module tag="Text" meta={post.slug} order={1}>
-          <article className="prose">
+          <Prose>
             <Component />
-          </article>
+          </Prose>
 
           {/* 読み終わりの行き先。面が伸びても下端に着く */}
           <Link className="more" to="/blog">

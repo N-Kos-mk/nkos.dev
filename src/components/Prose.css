@@ -1,0 +1,131 @@
+/* ============================================================
+   本文 — MDX で書かれた記事・制作物の中身
+   盤面の基準（16px / 1.7）より行間だけ広く取る。長い日本語を読み下す面であり、
+   ここだけは密度より可読性を優先している。
+   ============================================================ */
+
+.prose {
+  max-width: 70ch;
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--grey);
+}
+
+.prose p {
+  margin: 0 0 1.2em;
+}
+
+/* 節の切り替わりも罫線で示す */
+.prose h2 {
+  margin: 2.2em 0 0.7em;
+  padding-top: 1.1em;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+  border-top: 1px solid var(--line-soft);
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.prose h3 {
+  margin: 1.8em 0 0.5em;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.3em;
+}
+
+.prose li {
+  margin-bottom: 4px;
+}
+
+.prose li::marker {
+  color: var(--brass);
+}
+
+.prose strong {
+  font-weight: 700;
+  color: var(--paper);
+}
+
+.prose a {
+  color: var(--brass);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+
+.prose a:hover {
+  color: var(--paper);
+}
+
+.prose code {
+  padding: 1px 6px;
+  font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.86em;
+  color: var(--brass);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+}
+
+.prose pre {
+  margin: 0 0 1.4em;
+  padding: 18px;
+  overflow-x: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.prose pre code {
+  padding: 0;
+  font-size: 0.88em;
+  color: var(--paper);
+  background: none;
+  border: 0;
+}
+
+.prose blockquote {
+  margin: 0 0 1.4em;
+  padding-left: 16px;
+  color: var(--dim);
+  border-left: 2px solid var(--brass);
+}
+
+.prose hr {
+  margin: 2.4em 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.prose img {
+  display: block;
+  width: 100%;
+  margin-bottom: 1.4em;
+  border: 1px solid var(--line);
+}
+
+/* 表紙は写真枠と同じ扱い。色味だけ真鍮側へ寄せ、指したときに戻す */
+.prose .post-cover {
+  filter: grayscale(1) sepia(0.42) hue-rotate(-10deg) saturate(1.35) contrast(1.04);
+  transition: filter 0.45s ease;
+}
+
+.prose .post-cover:hover {
+  filter: none;
+}
+
+/* 本文と読み終わりの行き先を罫線で仕切る */
+.prose + .more {
+  border-top: 1px solid var(--line-soft);
+}

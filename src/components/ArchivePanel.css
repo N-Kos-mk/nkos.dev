@@ -1,0 +1,114 @@
+/* ============================================================
+   年月の目盛り — 一覧の脇に置く索引
+   ブログと制作物で共用する。
+   ============================================================ */
+
+/* 目盛りを脇に置く行。本体を優先し、目盛りは細く取る */
+.p-row.p-row--index {
+  grid-template-columns: minmax(0, 1fr) clamp(190px, 18vw, 236px);
+}
+
+/* 面は列の高さいっぱいのまま、中身だけを留めて一覧と別にスクロールさせる。
+   一覧を下まで送っても目盛りが視界から外れない */
+.arch-inner {
+  position: sticky;
+  top: 62px;
+  max-height: calc(100dvh - 86px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+/* 面の下端ではなく、目盛りの直下に着ける */
+.arch-inner .readout {
+  margin-top: 0;
+}
+
+.arch-years {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line-soft);
+}
+
+.arch-years > li {
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.arch-year-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 11px 0 8px;
+}
+
+.arch-year {
+  font: 500 12px var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--grey);
+}
+
+.arch-year-n {
+  font: 400 10.5px var(--display);
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+
+/* 段差は余白ではなく縦罫で示す */
+.arch-months {
+  margin: 0 0 8px;
+  padding: 0 0 0 13px;
+  list-style: none;
+}
+
+.arch-month {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 0 7px 11px;
+  background: none;
+  border: 0;
+  border-left: 1px solid var(--line-soft);
+  cursor: pointer;
+  transition: padding-left 0.25s, border-color 0.25s;
+}
+
+.arch-month:hover {
+  padding-left: 15px;
+  border-left-color: var(--brass);
+}
+
+.arch-month-label {
+  font: 500 11.5px var(--display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  color: var(--dim);
+  transition: color 0.25s;
+}
+
+.arch-month:hover .arch-month-label {
+  color: var(--paper);
+}
+
+.arch-month-n {
+  font: 400 10.5px var(--display);
+  letter-spacing: 0.14em;
+  color: var(--dim);
+}
+
+/* 縦積みでは目盛りが一覧の下に回るため、留める意味がなくなる */
+@media (max-width: 1000px) {
+  .p-row.p-row--index {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .arch-inner {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+}
