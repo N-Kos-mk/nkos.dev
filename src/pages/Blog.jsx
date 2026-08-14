@@ -57,6 +57,8 @@ export default function Blog() {
           ) : (
             <p className="empty">まだ記事はありません</p>
           )}
+
+          {posts.length > 0 && <p className="readout">latest {fmtDate(posts[0].date)}</p>}
         </Module>
 
         <Module tag="Archive" meta="by year" order={2}>

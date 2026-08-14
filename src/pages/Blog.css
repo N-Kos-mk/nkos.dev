@@ -102,6 +102,11 @@
   color: var(--dim);
 }
 
+/* 本文と読み終わりの行き先を罫線で仕切る */
+.prose + .more {
+  border-top: 1px solid var(--line-soft);
+}
+
 /* ── 記事脇の索引 ── */
 .bl-side-back {
   display: inline-flex;

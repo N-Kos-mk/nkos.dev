@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { MapPin, GraduationCap } from 'lucide-react'
 import { posts } from './lib/blog.js'
-import { fmtDate, navFor } from './lib/site.js'
+import { fmtDate } from './lib/site.js'
 import { STACK, STACK_FLAT, brandColor } from './lib/stack.js'
 import { WORKS } from './lib/works.js'
 import Rail from './components/Rail.jsx'
@@ -270,7 +270,7 @@ function App() {
         </div>
 
         {/* ── INDEX ── */}
-        <IndexNav links={navFor('home')} />
+        <IndexNav />
       </main>
     </div>
   )

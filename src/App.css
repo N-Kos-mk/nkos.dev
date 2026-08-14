@@ -467,6 +467,17 @@
   color: var(--brass);
 }
 
+/* 行き先を示す矢印を添える場合、文字のベースラインではなく中心で揃える */
+.more svg {
+  align-self: center;
+  flex-shrink: 0;
+  transition: transform 0.25s;
+}
+
+.more:hover svg {
+  transform: translate(3px, -3px);
+}
+
 .more-note {
   font: 400 10.5px var(--display);
   letter-spacing: 0.14em;
@@ -704,8 +715,28 @@
   animation-name: fade-in-left;
 }
 
-.index-item:hover {
+.index-item:not(.index-item--current):hover {
   background: rgba(210, 168, 87, 0.07);
+}
+
+/* いま居るページ。行き先を持たないため、面を薄く起こして目盛りだけを置く */
+.index-item--current {
+  cursor: default;
+  background: rgba(210, 168, 87, 0.07);
+}
+
+.index-item--current .index-note {
+  color: var(--grey);
+}
+
+/* 現在地の印。送りインジケータと同じ 28×2px の直線 */
+.index-mark {
+  align-self: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 28px;
+  height: 2px;
+  background: var(--brass);
 }
 
 .index-label {
