@@ -51,6 +51,17 @@ export const tokyoTime = () =>
 export const tokyoYear = () =>
   new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', year: 'numeric' }).format(new Date())
 
+export const SITE_START_YEAR = 2026
+
+/* 開始年から現在まで、の表記。同じ年のうちは「2026-」と開いたままにし、
+   年をまたいだところで現在年まで伸ばす */
+export const copyrightOf = year => {
+  const now = Number(year)
+  return Number.isNaN(now) || now <= SITE_START_YEAR
+    ? `© ${SITE_START_YEAR}-`
+    : `© ${SITE_START_YEAR}-${now}`
+}
+
 export const fmtDate = value => {
   const d = new Date(value)
   return Number.isNaN(d.getTime())

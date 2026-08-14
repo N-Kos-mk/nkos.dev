@@ -189,21 +189,6 @@
   animation-delay: calc(620ms + var(--i, 0) * 45ms);
 }
 
-/* ── 奥付 ──
-   索引の下に細い帯を 1 本足すだけ。トップページには置かない
-   （一画面に収める設計を、この 1 行のために削らない） */
-.p-foot {
-  padding: 11px clamp(16px, 1.8vw, 26px);
-  border-top: 1px solid var(--line);
-  animation: fade-in 0.55s 1100ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-}
-
-.p-copy {
-  font: 400 10.5px var(--display);
-  letter-spacing: 0.16em;
-  color: var(--dim);
-}
-
 /* ── Animations ──
    打点の明滅。等間隔だと機械の点滅に見えるため、間隔を揃えずに散らしてある */
 @keyframes beacon {
